@@ -2,7 +2,7 @@
 
 **Author:** Markus van Kempen · [markusvankempen.github.io](https://markusvankempen.github.io/)
 
-Hands-on learning path for **IBM watsonx Orchestrate** — 14 progressive labs from your first Python tool to MCP integration, SSO, RBAC, observability, and RAG evaluation.
+Hands-on learning path for **IBM watsonx Orchestrate** — 15 progressive labs from your first Python tool to MCP integration, SSO, RBAC, observability, and RAG evaluation.
 
 ## Start here
 
@@ -18,7 +18,7 @@ Hands-on learning path for **IBM watsonx Orchestrate** — 14 progressive labs f
 |-------|------|--------|
 | 🟢 Easy | 1–3 | Hello World, Pydantic defaults, file upload |
 | 🟡 Intermediate | 4–8 | Context injection, async jobs, downloads, **MCP basics & advanced** |
-| 🔴 Advanced | 9–11 | RBAC plugins, Entra ID SSO, agent export/import |
+| 🔴 Advanced | 9–11, 15 | RBAC plugins, Entra ID SSO, agent CI/CD, **Remote MCP (Streamable HTTP, SSE & Observability)** |
 | 🏆 Expert | 12–14 | Audit logging, observability dashboard, RAG evaluation |
 
 ## Prerequisites
@@ -39,6 +39,7 @@ wxo-labs/
     ├── hello_world_tutorial/
     ├── mcp_discovery_test/
     ├── mcp_user_context_test/
+    ├── mcp_ticket_demo_e2e/
     └── ...
 ```
 

@@ -1,0 +1,8 @@
+spec_version: v1
+kind: mcp
+name: mcp_ticket_demo_local
+description: "MCP Ticket Demo - Local Stdio Reference Implementation"
+package: "mcp-ticket-demo"
+language: "node"
+tools:
+  - "*"

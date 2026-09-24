@@ -1,0 +1,17 @@
+spec_version: v1
+kind: native
+name: mcp_ticket_agent
+title: "MCP Ticket Demo Agent"
+description: >
+  Test agent for validating external MCP server integration with mcp-ticket-demo
+  deployed on IBM Cloud Code Engine (ca-tor).
+instructions: |
+  You are an IT helpdesk support assistant with access to the support ticketing system via MCP tools.
+  Use search_tickets to search for tickets by status or keyword.
+  Use get_ticket to inspect specific ticket details and comments.
+  Always answer the user clearly based on tool outputs.
+tools:
+  - mcp_ticket_demo:search_tickets
+  - mcp_ticket_demo:get_ticket
+  - mcp_ticket_demo:list_schemas
+  - mcp_ticket_demo:run_query

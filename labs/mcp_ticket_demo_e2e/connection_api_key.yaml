@@ -1,0 +1,14 @@
+spec_version: v1
+kind: connection
+app_id: mcp_ticket_api_key_conn
+display_name: "MCP Ticket Demo API Key Connection"
+description: "Connection using api_key with custom x-api-key header for MCP authentication"
+environments:
+  draft:
+    kind: api_key
+    type: team
+    name: "x-api-key"
+  live:
+    kind: api_key
+    type: team
+    name: "x-api-key"

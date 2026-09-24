@@ -26,6 +26,7 @@
   - [Lab 9: RBAC Plugin](#lab-9-rbac-plugin---role-based-access-control)
   - [Lab 10: SSO Integration](#lab-10-sso-integration-with-microsoft-entra-id)
   - [Lab 11: Agent Export/Import](#lab-11-agent-exportimport--cicd)
+  - [Lab 15: External Remote MCP Server Integration](#lab-15-external-remote-mcp-server-integration---streamable-http-sse--live-observability)
 - [🏆 Expert Labs (Mastery)](#-expert-labs-mastery)
   - [Lab 12: Conversation Logging](#lab-12-conversation-logging--audit-vault)
   - [Lab 13: Observability Dashboard](#lab-13-observability-dashboard)
@@ -1492,6 +1493,276 @@ echo "✅ Import complete"
 
 #### 🎯 Challenge Exercise
 Build a GitHub Actions workflow that automatically deploys agents on merge to main.
+
+---
+
+### Lab 15: External Remote MCP Server Integration — Streamable HTTP, SSE & Live Observability
+**⏱️ Duration:** 120 minutes  
+**📁 Reference:** [`labs/mcp_ticket_demo_e2e/`](./labs/mcp_ticket_demo_e2e/)  
+**🎯 Learning Goals:** Remote MCP architecture, Streamable HTTP vs SSE, custom header authentication, resolving `Gateway creation failed: 422`, and live observability request tracing.
+
+#### Real-World Scenario
+In enterprise production environments, Model Context Protocol (MCP) servers rarely run as local subprocesses inside an agent's desktop environment. Instead, they run as standalone microservices deployed on **IBM Cloud Code Engine**, Red Hat OpenShift, Kubernetes, or serverless containers.
+
+When an AI agent needs to look up customer accounts, query service tickets, or add comments, watsonx Orchestrate (WxO) must establish a secure, reliable remote gateway handshake over the network.
+
+This lab uses [`mcp-ticket-demo`](https://www.npmjs.com/package/mcp-ticket-demo) (GitHub: [markusvankempen/mcp-ticket-demo](https://github.com/markusvankempen/mcp-ticket-demo)) — an enterprise-shaped reference server featuring:
+- Support for both **Streamable HTTP** (`/mcp`) and **Server-Sent Events** (`/sse`).
+- Custom header authentication (`x-api-key`, `Authorization: Bearer`, or custom tokens like QRadar's `SEC: <token>`).
+- Built-in live observability dashboard (`/health`, `/test`, `/log`, `/admin`).
+
+---
+
+#### 🏗️ Architecture & Handshake Flow
+
+When you import a remote MCP toolkit into WxO, the cloud backend in your region (e.g. Toronto `ca-tor`) immediately initiates an outbound handshake against the remote URL before confirming creation:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer / CLI
+    participant WXO as WxO Backend (ca-tor)
+    participant GW as WxO MCP Gateway
+    participant MCP as Remote MCP Server (Code Engine)
+    actor Agent as LLM Agent
+
+    Dev->>WXO: orchestrate toolkits import -f toolkit.yaml
+    Note over WXO: Reads transport (streamable_http) & URL
+    WXO->>GW: Provision MCP Gateway Route
+    GW->>MCP: POST /mcp (method: "initialize")<br/>Accept: application/json, text/event-stream
+    MCP-->>GW: HTTP 200 OK (capabilities, protocolVersion: 2024-11-05)
+    GW->>MCP: POST /mcp (method: "tools/list")
+    MCP-->>GW: HTTP 200 OK (8 tools discovered)
+    GW-->>WXO: Gateway Created Successfully
+    WXO-->>Dev: [INFO] - Successfully imported tool kit mcp_ticket_demo
+
+    Dev->>WXO: orchestrate chat ask "Search for open tickets"
+    WXO->>Agent: Plan Tool Execution
+    Agent->>GW: Execute mcp_ticket_demo:search_tickets
+    GW->>MCP: POST /mcp (method: "tools/call", name: "search_tickets")
+    MCP-->>GW: HTTP 200 OK (Returns tickets TCK-1004, TCK-1001)
+    GW-->>Agent: Tool Result Payload
+    Agent-->>Dev: "Found 2 open tickets: TCK-1004 (High) and TCK-1001 (Critical)..."
+```
+
+---
+
+#### 🔍 Diagnosing `Gateway creation failed: 422`
+
+The most common failure when registering external MCP servers is:
+```
+[ERROR] - Failed to create toolkit: Gateway creation failed: 422 {"detail":"An error occurred, please try again."}
+```
+
+This 422 status indicates that WxO's backend attempted the outbound handshake (`initialize` and `tools/list`) and failed. Use this decision tree to pinpoint the cause:
+
+```mermaid
+flowchart TD
+    A["Developer runs: orchestrate toolkits import"] --> B["WxO Cloud Pods (ca-tor)"]
+    B --> C["WxO Gateway initiates outbound POST /mcp"]
+    
+    C -->|Check 1: Network Reachability| D{"Is URL publicly reachable<br/>from IBM Cloud pods?"}
+    D -- "No (Internal VPN / Private OpenShift Route)" --> E["❌ 422 Gateway Error<br/>(Connection Refused / DNS Timeout)"]
+    D -- "Yes" --> F{"Is TLS Certificate<br/>Publicly Trusted?"}
+    
+    F -- "No (Corporate CA / Self-Signed)" --> G["❌ 422 Gateway Error<br/>(SSL Handshake Rejection)"]
+    F -- "Yes" --> H{"Does URL include<br/>MCP path (/mcp or /sse)?"}
+    
+    H -- "No (Base domain only)" --> I["❌ 422 Gateway Error<br/>(HTTP 404 / 405 Method Not Allowed)"]
+    H -- "Yes" --> J{"Are credentials set on<br/>DRAFT environment?"}
+    
+    J -- "No (Missing / live only)" --> K["❌ 422 Gateway Error<br/>(HTTP 401 / 403 Unauthorized)"]
+    J -- "Yes (Header & Token valid)" --> L["✅ 200 OK — Toolkit Imported Successfully!"]
+
+    style E fill:#f8d7da,stroke:#f5c6cb,color:#721c24
+    style G fill:#f8d7da,stroke:#f5c6cb,color:#721c24
+    style I fill:#f8d7da,stroke:#f5c6cb,color:#721c24
+    style K fill:#f8d7da,stroke:#f5c6cb,color:#721c24
+    style L fill:#d4edda,stroke:#c3e6cb,color:#155724
+```
+
+---
+
+#### 🔨 Step-by-Step Hands-On Implementation
+
+##### Step 1: Select Your Remote Endpoint
+You have two options for the MCP ticket demo:
+1. **Public Cloud Demo (Zero Setup):**
+   ```
+   https://mcp-ticket-demo.29m5mrru3s3n.ca-tor.codeengine.appdomain.cloud/mcp
+   ```
+2. **Local Run with ngrok (Custom Testing):**
+   ```bash
+   npx mcp-ticket-demo --port 8080 --auth-mode off
+   ngrok http 8080
+   # Use: https://<ngrok-id>.ngrok-free.app/mcp
+   ```
+
+Verify the endpoint in your browser or curl:
+```bash
+curl -s https://mcp-ticket-demo.29m5mrru3s3n.ca-tor.codeengine.appdomain.cloud/health | jq .
+```
+Expected output:
+```json
+{
+  "status": "healthy",
+  "auth_mode": "off",
+  "tools_count": 8,
+  "endpoints": {
+    "streamable_http": "/mcp",
+    "sse": "/sse",
+    "health": "/health",
+    "log": "/log"
+  }
+}
+```
+
+##### Step 2: Configure Header Authentication (Optional / Production Mode)
+If your MCP server requires an API key in a custom header (e.g. `x-api-key` or `SEC: <token>`):
+
+```bash
+# 1. Add connection
+orchestrate connections add -a mcp_ticket_conn
+
+# 2. Configure header name on DRAFT environment
+orchestrate connections configure \
+  -a mcp_ticket_conn \
+  --env draft \
+  --type team \
+  --kind api_key \
+  --name "x-api-key"
+
+# 3. Store the credential
+orchestrate connections set-credentials \
+  -a mcp_ticket_conn \
+  --env draft \
+  --api-key "secret-api-key"
+```
+
+> [!IMPORTANT]
+> Always set credentials on the `--env draft` environment during CLI development! WxO toolkit import validates against `draft` credentials.
+
+##### Step 3: Define the Toolkit Manifest
+Create `toolkit_codeengine.yaml`:
+
+```yaml
+kind: mcp
+name: mcp_ticket_demo
+description: "Reference ticket and customer support MCP server on Code Engine"
+transport: streamable_http
+url: "https://mcp-ticket-demo.29m5mrru3s3n.ca-tor.codeengine.appdomain.cloud/mcp"
+tools:
+  - "*"
+```
+
+> [!TIP]
+> Notice the quotes in `tools: ["*"]` or `- "*"`. Unquoted asterisks trigger `yaml.scanner.ScannerError` in PyYAML because `*` is reserved for YAML aliases!
+
+##### Step 4: Import the Toolkit & Verify Dynamic Discovery
+Import the toolkit into your active environment:
+
+```bash
+orchestrate toolkits import -f toolkit_codeengine.yaml
+```
+
+Output:
+```
+[INFO] - Successfully imported tool kit mcp_ticket_demo
+```
+
+Verify that all 8 tools were dynamically discovered by WxO:
+```bash
+orchestrate tools list | grep mcp_ticket_demo
+```
+Expected tools:
+- `mcp_ticket_demo:lookup_customer` — Look up customer account details
+- `mcp_ticket_demo:search_tickets` — Search support tickets by query/status
+- `mcp_ticket_demo:get_ticket` — Retrieve ticket details
+- `mcp_ticket_demo:create_ticket` — File a new ticket
+- `mcp_ticket_demo:add_comment` — Add notes to existing tickets
+- `mcp_ticket_demo:run_query` — Execute SQL-like query
+- `mcp_ticket_demo:get_schema` — Inspect data schemas
+- `mcp_ticket_demo:list_schemas` — List available tables
+
+##### Step 5: Deploy the AI Agent & Test Multi-Turn Chat
+Create `agent.yaml`:
+
+```yaml
+name: mcp_ticket_agent
+title: "Support Ticket AI Agent"
+description: "AI agent powered by remote MCP ticket tools"
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are an enterprise IT and customer support assistant.
+  Use mcp_ticket_demo tools to search tickets, inspect customer info, and provide clear summaries.
+tools:
+  - mcp_ticket_demo:search_tickets
+  - mcp_ticket_demo:get_ticket
+  - mcp_ticket_demo:lookup_customer
+```
+
+Deploy the agent:
+```bash
+orchestrate agents import -f agent.yaml
+orchestrate agents deploy -n mcp_ticket_agent
+```
+
+Test querying live tickets:
+```bash
+orchestrate chat ask -n mcp_ticket_agent "Search for open tickets and summarize them"
+```
+
+Response:
+```
+╭─ 🤖 mcp_ticket_agent ─────────────────────────────────────────────────────────────╮
+│ Based on the search, there are 2 open tickets:                                    │
+│ 1. TCK-1001: Payment Gateway Timeout (Status: open, Priority: critical)            │
+│ 2. TCK-1004: Mobile App Crash on Checkout (Status: open, Priority: high)          │
+╰───────────────────────────────────────────────────────────────────────────────────╯
+```
+
+##### Step 6: Live Observability Trace
+Visit the live call trace dashboard:
+```
+https://mcp-ticket-demo.29m5mrru3s3n.ca-tor.codeengine.appdomain.cloud/log
+```
+You will see the exact incoming HTTP calls made by WxO:
+- `POST /mcp` — `{"method": "initialize", "params": {"protocolVersion": "2024-11-05"}}`
+- `POST /mcp` — `{"method": "tools/list"}`
+- `POST /mcp` — `{"method": "tools/call", "params": {"name": "search_tickets"}}`
+
+---
+
+#### 🧪 Automated Diagnostic Test Suite
+The lab repository includes `test_debug_scenarios.sh` to test or reproduce all edge cases:
+
+| Scenario | Command | Purpose |
+|:---|:---|:---|
+| **1. Streamable HTTP** | `./test_debug_scenarios.sh 1` | Verifies clean Streamable HTTP handshake (`AUTH_MODE=off`) |
+| **2. SSE Transport** | `./test_debug_scenarios.sh 2` | Verifies Server-Sent Events handshake at `/sse` |
+| **3. API Key Header** | `./test_debug_scenarios.sh 3` | Tests custom header auth with `kind: api_key` |
+| **4. Key-Value Header** | `./test_debug_scenarios.sh 4` | Tests header auth with `kind: key_value` |
+| **5. Missing Credentials** | `./test_debug_scenarios.sh 5` | **[Reproduction]** Proves missing draft credentials cause 422 Gateway failure |
+| **6. Unreachable Route** | `./test_debug_scenarios.sh 6` | **[Reproduction]** Proves private network routes cause 422 Gateway failure |
+
+To run the complete automated end-to-end deploy and probe:
+```bash
+cd labs/mcp_ticket_demo_e2e
+./deploy_remote_e2e.sh
+```
+
+---
+
+#### ✅ Success Criteria
+- [ ] Successfully queried `/health` endpoint of remote MCP server.
+- [ ] Imported remote MCP toolkit using `transport: streamable_http` and dynamic discovery `tools: ["*"]`.
+- [ ] Confirmed all 8 MCP tools appear in `orchestrate tools list`.
+- [ ] Deployed `mcp_ticket_agent` and verified tool execution in live chat.
+- [ ] Inspected incoming JSON-RPC handshakes on the `/log` trace page.
+- [ ] Understand the root causes of `Gateway creation failed: 422`.
+
+#### 🎯 Challenge Exercise
+Configure `mcp-ticket-demo` with `--auth-mode write` so that read operations (`search_tickets`, `get_ticket`) require no key, but filing a new ticket (`create_ticket`) requires an authenticated team connection.
 
 ---
 

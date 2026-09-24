@@ -1,0 +1,8 @@
+spec_version: v1
+kind: mcp
+name: mcp_ticket_demo
+description: "MCP Ticket Demo on Code Engine ca-tor"
+transport: streamable_http
+url: "https://mcp-ticket-demo.29m5mrru3s3n.ca-tor.codeengine.appdomain.cloud/mcp"
+tools:
+  - "*"
