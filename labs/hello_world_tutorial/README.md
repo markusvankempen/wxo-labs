@@ -9,11 +9,13 @@
 ## 📖 Overview
 This is an implementation of the [Official WXO Hello World Tutorial](https://developer.watson-orchestrate.ibm.com/tutorials/tutorial_1_hello_world). It demonstrates how to build and import a basic Python-based tool into Watsonx Orchestrate.
 
-## 🛠️ Artifacts
+## 🛠️ Artifacts & Blog Post
+*   **[ibm_community_post.html](./ibm_community_post.html)**: Clean, semantic HTML ready to copy & paste into IBM Community blog editor.
+*   **[index.html](./index.html)**: Interactive, standalone blog presentation view.
+*   **[IBM_COMMUNITY_BLOG_LAB1_BEGINNER.md](./IBM_COMMUNITY_BLOG_LAB1_BEGINNER.md)**: Full tutorial blog post in GitHub Markdown.
 *   **[greetings.py](./greetings.py)**: The Python function that provides the greeting logic.
 *   **[requirements.txt](./requirements.txt)**: Dependency list (MUST include `ibm-watsonx-orchestrate`).
-
-...
+*   **[hello_world_agent.yaml](./hello_world_agent.yaml)**: A native agent to test the tool.
 
 ## 💡 Troubleshooting: ModuleNotFoundError
 If you see an error like `ModuleNotFoundError: No module named 'ibm_watsonx_orchestrate'`, it means the WXO runner environment cannot find the tool decorator library.
@@ -25,7 +27,6 @@ If you see an error like `ModuleNotFoundError: No module named 'ibm_watsonx_orch
     orchestrate tools import -k python -f greetings.py -r requirements.txt
     ```
     *Note: In some private cloud environments (like Azure AKS), the runner might not pre-cache the ADK library, making this step mandatory.*
-*   **[hello_world_agent.yaml](./hello_world_agent.yaml)**: A native agent to test the tool.
 
 ## 🚀 Deployment Steps (Command Sequence)
 

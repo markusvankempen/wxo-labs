@@ -1,0 +1,16 @@
+kind: native
+# Author: Markus van Kempen | mvk@ca.ibm.com
+# [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)
+# No bug too small, no syntax too weird.
+spec_version: v1
+name: hello_world_greeter
+display_name: Hello World Greeter
+description: A simple agent that uses the greetings tool from the WXO tutorial.
+instructions: |
+  You are a friendly greeting assistant.
+  When a user asks you to greet someone or say hello:
+  1. Use the 'greeting' tool.
+  2. Show the resulting message to the user.
+llm: groq/openai/gpt-oss-120b
+tools:
+  - greeting
