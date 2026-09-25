@@ -1,22 +1,14 @@
-<!-- 
-  IBM Community Ready HTML
-  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
-  using the "Source Code" (<>) button.
-  All images use absolute GitHub URLs so they render immediately without broken links!
--->
-
 <h2>Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool &amp; AI Agent in 15 Minutes</h2>
 
 <p>
-  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
   <strong>By Markus van Kempen</strong> | 
   <em>Series: WXO Labs &amp; Tutorial Guide (Part 1 of 15)</em><br />
-  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
-  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank" rel="noopener noreferrer">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank" rel="noopener noreferrer">https://github.com/markusvankempen/wxo-labs</a>
 </p>
 
 <p>
-  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Building Custom Tools in watsonx Orchestrate" style="max-width: 100%; height: auto; border-radius: 8px;" />
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Building Custom Tools in watsonx Orchestrate" style="max-width: 100%; height: auto;" />
 </p>
 
 <h3>Why Custom Tools Matter</h3>
@@ -30,12 +22,12 @@
 </p>
 
 <p>
-  In this quick, hands-on tutorial (adapted from <strong>Lab 1</strong> of our <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">WXO Labs &amp; Tutorial Guide</a>), we will build, deploy, and chat with your very first custom Python tool and native AI agent from scratch in <strong>under 15 minutes</strong>.
+  In this quick, hands-on tutorial (adapted from <strong>Lab 1</strong> of our <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank" rel="noopener noreferrer">WXO Labs &amp; Tutorial Guide</a>), we will build, deploy, and chat with your very first custom Python tool and native AI agent from scratch in <strong>under 15 minutes</strong>.
 </p>
 
 <hr />
 
-<h3>📋 Prerequisites</h3>
+<h3>Prerequisites</h3>
 
 <p>Before starting, ensure you have:</p>
 <ol>
@@ -43,21 +35,21 @@
   <li>The <strong>IBM watsonx Orchestrate CLI</strong> installed:</li>
 </ol>
 
-<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+<pre><code>pip install ibm-watsonx-orchestrate</code></pre>
 
 <p>Verify your CLI environment is active:</p>
-<pre><code class="language-bash">orchestrate env list</code></pre>
+<pre><code>orchestrate env list</code></pre>
 
 <hr />
 
-<h3>🛠️ Step 1: Write Your Python Tool (<code>greetings.py</code>)</h3>
+<h3>Step 1: Write Your Python Tool (greetings.py)</h3>
 
 <p>Create a new folder for your project and create a file named <code>greetings.py</code>:</p>
 
-<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+<pre><code>from ibm_watsonx_orchestrate import tool
 
 @tool
-def greet_user(name: str) -> str:
+def greet_user(name: str) -&gt; str:
     """
     Generate a personalized greeting for a user.
 
@@ -67,45 +59,44 @@ def greet_user(name: str) -> str:
     Returns:
         A friendly greeting message.
     """
-    return f"Hello, {name}! Welcome to IBM watsonx Orchestrate."
-</code></pre>
+    return f"Hello, {name}! Welcome to IBM watsonx Orchestrate."</code></pre>
 
-<p><strong>💡 What makes this work?</strong></p>
+<p><strong>What makes this work?</strong></p>
 <ul>
-  <li><strong><code>@tool</code> decorator:</strong> Automatically registers the Python function as an Orchestrate tool.</li>
-  <li><strong>Type annotations (<code>name: str</code>):</strong> Orchestrate inspects Python type hints to generate the JSON Schema.</li>
+  <li><strong>@tool decorator:</strong> Automatically registers the Python function as an Orchestrate tool.</li>
+  <li><strong>Type annotations (name: str):</strong> Orchestrate inspects Python type hints to generate the JSON Schema.</li>
   <li><strong>Docstrings:</strong> The LLM reads the function description and <code>Args:</code> documentation to decide <em>when</em> to call the tool and <em>which arguments</em> to parse from the user prompt!</li>
 </ul>
 
 <hr />
 
-<h3>📦 Step 2: Create <code>requirements.txt</code></h3>
+<h3>Step 2: Create requirements.txt</h3>
 
 <p>Create a <code>requirements.txt</code> file in the same directory to declare the tool dependency:</p>
 
-<pre><code class="language-text">ibm-watsonx-orchestrate&gt;=2.9.0</code></pre>
+<pre><code>ibm-watsonx-orchestrate&gt;=2.9.0</code></pre>
 
 <hr />
 
-<h3>🚀 Step 3: Import the Tool into WXO Catalog</h3>
+<h3>Step 3: Import the Tool into WXO Catalog</h3>
 
 <p>Run the following CLI command to package and upload your Python tool to your Orchestrate environment:</p>
 
-<pre><code class="language-bash">orchestrate tools import -k python -f greetings.py -r requirements.txt</code></pre>
+<pre><code>orchestrate tools import -k python -f greetings.py -r requirements.txt</code></pre>
 
 <p>You should see:</p>
-<pre><code class="language-text">[INFO] - Successfully imported tool 'greet_user'</code></pre>
+<pre><code>[INFO] - Successfully imported tool 'greet_user'</code></pre>
 
 <p>Verify that it appears in your catalog:</p>
-<pre><code class="language-bash">orchestrate tools list | grep greet_user</code></pre>
+<pre><code>orchestrate tools list | grep greet_user</code></pre>
 
 <hr />
 
-<h3>🤖 Step 4: Define Your AI Agent (<code>agent.yaml</code>)</h3>
+<h3>Step 4: Define Your AI Agent (agent.yaml)</h3>
 
 <p>Now let's build an AI agent that knows how to use our new tool. Create a file named <code>agent.yaml</code>:</p>
 
-<pre><code class="language-yaml">spec_version: v1
+<pre><code>spec_version: v1
 kind: native
 name: hello_world_greeter
 title: "Hello World Greeter"
@@ -116,33 +107,26 @@ instructions: |
   When a user introduces themselves or asks you to greet someone, extract their name
   and call the `greet_user` tool to deliver a personalized welcome.
 tools:
-  - greet_user
-</code></pre>
+  - greet_user</code></pre>
 
 <hr />
 
-<h3>🚢 Step 5: Deploy &amp; Test Your Agent</h3>
+<h3>Step 5: Deploy &amp; Test Your Agent</h3>
 
 <p>Import and deploy your agent with two simple commands:</p>
 
-<pre><code class="language-bash"># 1. Import the agent manifest
+<pre><code># 1. Import the agent manifest
 orchestrate agents import -f agent.yaml
 
 # 2. Deploy to active environment
-orchestrate agents deploy -n hello_world_greeter
-</code></pre>
+orchestrate agents deploy -n hello_world_greeter</code></pre>
 
 <p>Now, test your agent conversationally in your terminal:</p>
 
-<pre><code class="language-bash">orchestrate chat ask -n hello_world_greeter "Say hello to Markus"</code></pre>
+<pre><code>orchestrate chat ask -n hello_world_greeter "Say hello to Markus"</code></pre>
 
 <p><strong>Live Response:</strong></p>
-<pre><code class="language-text">╭─ 🤖 hello_world_greeter ───────────────────────────────────────────────╮
-│                                                                        │
-│  Hello, Markus! Welcome to IBM watsonx Orchestrate.                    │
-│                                                                        │
-╰────────────────────────────────────────────────────────────────────────╯
-</code></pre>
+<pre><code>[hello_world_greeter] Hello, Markus! Welcome to IBM watsonx Orchestrate.</code></pre>
 
 <p>
   The agent parsed your prompt, recognized that it should greet "Markus", extracted <code>name="Markus"</code>, called <code>greet_user(name="Markus")</code> in Python, and returned the greeting!
@@ -150,14 +134,14 @@ orchestrate agents deploy -n hello_world_greeter
 
 <hr />
 
-<h3>🎯 Challenge: Add Multi-Language Greetings!</h3>
+<h3>Challenge: Add Multi-Language Greetings!</h3>
 
 <p>Try modifying <code>greetings.py</code> to support a language parameter:</p>
 
-<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+<pre><code>from ibm_watsonx_orchestrate import tool
 
 @tool
-def greet_user(name: str, language: str = "en") -> str:
+def greet_user(name: str, language: str = "en") -&gt; str:
     """
     Generate a personalized greeting in the requested language.
 
@@ -171,36 +155,39 @@ def greet_user(name: str, language: str = "en") -> str:
         "fr": f"Bonjour, {name}! Bienvenue dans IBM watsonx Orchestrate.",
         "de": f"Guten Tag, {name}! Willkommen bei IBM watsonx Orchestrate."
     }
-    return greetings.get(language.lower(), greetings["en"])
-</code></pre>
+    return greetings.get(language.lower(), greetings["en"])</code></pre>
 
 <p>Re-import the tool:</p>
-<pre><code class="language-bash">orchestrate tools import -k python -f greetings.py -r requirements.txt</code></pre>
+<pre><code>orchestrate tools import -k python -f greetings.py -r requirements.txt</code></pre>
 
 <p>Now ask your agent:</p>
-<pre><code class="language-bash">orchestrate chat ask -n hello_world_greeter "Greet Carlos in Spanish"</code></pre>
+<pre><code>orchestrate chat ask -n hello_world_greeter "Greet Carlos in Spanish"</code></pre>
 <p>The agent will automatically map <code>language="es"</code> and reply in Spanish!</p>
 
 <hr />
 
-<h3>🗺️ What’s Next in the Series?</h3>
+<h3>What's Next in the Series?</h3>
 
 <p>
   Congratulations! You have completed <strong>Lab 1</strong>. This is the first of <strong>15 progressive hands-on labs</strong> designed to take you from foundational Python tools to enterprise production architectures:
 </p>
 
 <ul>
-  <li>🟢 <strong>Foundation (Labs 1–3):</strong> UI input defaults, file uploads, and document parsing pipelines.</li>
-  <li>🟡 <strong>Intermediate (Labs 4–8):</strong> Ambient user context injection (<code>{wxo_user_name}</code>), async long-running jobs, file streaming, and Model Context Protocol (MCP) servers.</li>
-  <li>🔴 <strong>Advanced (Labs 9–11, 15):</strong> Role-Based Access Control (RBAC), Entra ID SSO, CI/CD export/import, and remote containerized MCP services.</li>
-  <li>🏆 <strong>Expert (Labs 12–14):</strong> Enterprise audit vaults, live observability dashboards, and RAG evaluation pipelines.</li>
+  <li><strong>Foundation (Labs 1-3):</strong> UI input defaults, file uploads, and document parsing pipelines.</li>
+  <li><strong>Intermediate (Labs 4-8):</strong> Ambient user context injection ({wxo_user_name}), async long-running jobs, file streaming, and Model Context Protocol (MCP) servers.</li>
+  <li><strong>Advanced (Labs 9-11, 15):</strong> Role-Based Access Control (RBAC), Entra ID SSO, CI/CD export/import, and remote containerized MCP services.</li>
+  <li><strong>Expert (Labs 12-14):</strong> Enterprise audit vaults, live observability dashboards, and RAG evaluation pipelines.</li>
 </ul>
 
 <p>Explore the complete interactive curriculum and source code:</p>
 <ul>
-  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
-  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
-  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+  <li><strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank" rel="noopener noreferrer">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li><strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank" rel="noopener noreferrer">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li><strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank" rel="noopener noreferrer">https://markusvankempen.github.io/</a></li>
 </ul>
 
-<p><em>Have questions or want to see a specific topic covered in Part 2? Drop a comment below!</em></p>
+<p>
+  Author: Markus van Kempen | <a href="mailto:mvk@ca.ibm.com">mvk@ca.ibm.com</a><br />
+  <a href="https://pages.github.ibm.com/mvankempen/homepage/" target="_blank" rel="noopener noreferrer">Research | Floor 7½ 🏢🤏</a><br />
+  <em>No bug too small, no syntax too weird.</em>
+</p>
