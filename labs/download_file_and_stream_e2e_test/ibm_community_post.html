@@ -1,0 +1,172 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Streaming Dynamic Files & PDF Generation in watsonx Orchestrate: Delivering On-Demand Reports</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 6 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Streaming Dynamic Files & PDF Generation in watsonx Orchestrate: Delivering On-Demand Reports" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>Executives often require formal PDF briefing packets with corporate headers and timestamps. Rather than sending static templates, our agent synthesizes live conversational data and renders a downloadable binary PDF on demand.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>pdf_generator.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import tempfile
+import os
+from datetime import datetime
+
+@tool
+def generate_report_pdf(report_title: str, report_body: str) -&gt; str:
+    """
+    Generate a formatted binary PDF document and return a download URI.
+    """
+    temp_dir = tempfile.gettempdir()
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"WXO_Report_{timestamp}.pdf"
+    filepath = os.path.join(temp_dir, filename)
+
+    c = canvas.Canvas(filepath, pagesize=letter)
+    width, height = letter
+
+    # Header branding
+    c.setFont("Helvetica-Bold", 18)
+    c.setFillColorRGB(0.06, 0.38, 0.99) # IBM Blue
+    c.drawString(50, height - 50, "IBM watsonx Orchestrate")
+
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColorRGB(0.1, 0.1, 0.1)
+    c.drawString(50, height - 85, report_title)
+
+    c.setFont("Helvetica", 9)
+    c.setFillColorRGB(0.4, 0.4, 0.4)
+    c.drawString(50, height - 105, f"Generated: {datetime.now().strftime('%B %d, %Y at %H:%M:%S UTC')}")
+
+    # Body
+    c.setFont("Helvetica", 11)
+    c.setFillColorRGB(0.1, 0.1, 0.1)
+    text_object = c.beginText(50, height - 140)
+    for line in report_body.split("\n"):
+        text_object.textLine(line)
+    c.drawText(text_object)
+
+    c.save()
+    filesize = os.path.getsize(filepath)
+
+    return f"""
+📄 PDF Document Generated Successfully
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Title:    {report_title}
+File:     {filename} ({filesize:,} bytes)
+Location: {filepath}
+Status:   Ready for download
+"""</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0
+reportlab>=4.0.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: report_publisher_agent
+title: "Report Publisher"
+description: "Generates formatted PDF executive briefings on demand."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are an executive publishing assistant. Format summaries into structured
+  briefings and call `generate_report_pdf` to create the document.
+tools:
+  - generate_report_pdf</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n report_publisher_agent "Generate a PDF report on Q3 AI Adoption"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🤖 report_publisher_agent ───────────────────────────────────────────╮
+│                                                                        │
+│  📄 PDF Document Generated Successfully                                │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                  │
+│  Title:    Q3 AI Adoption Briefing                                     │
+│  File:     WXO_Report_20260924_201500.pdf (4,812 bytes)                │
+│  Status:   Ready for download                                          │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>Cloud Ephemeral Storage:</strong> On local dev or container sandboxes, `/tmp` works directly. For production cloud deployments, stream the generated bytes to IBM Cloud Object Storage (COS) or AWS S3 and return a presigned HTTPS URL.</li>
+  <li><strong>ReportLab Fonts:</strong> Stick to built-in PostScript fonts (`Helvetica`, `Times-Roman`, `Courier`) to avoid bundle size bloat and missing TTF font errors.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 6 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

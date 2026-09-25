@@ -1,0 +1,157 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Input Defaults & UI Patterns in watsonx Orchestrate: Supercharging UX with Smart Pydantic Schemas</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 2 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Input Defaults & UI Patterns in watsonx Orchestrate: Supercharging UX with Smart Pydantic Schemas" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>In enterprise workflows like financial approvals or travel requests, users often don't know the exact parameters required, leading to repetitive validation errors. By enforcing smart defaults and range constraints with Pydantic in watsonx Orchestrate, our AI agent can pre-fill sensible defaults (e.g. $1,000 standard budget) and let users override only what is necessary.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>financial_tool.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+from pydantic import BaseModel, Field
+
+class FinancialApprovalInput(BaseModel):
+    """Input schema for financial approval with UI defaults."""
+    amount: float = Field(
+        default=1000.0,
+        description="The amount to approve (USD)",
+        ge=0.0,
+        le=1000000.0
+    )
+    reason: str = Field(
+        default="Standard equipment refresh",
+        description="Reason for the approval request"
+    )
+    urgent: bool = Field(
+        default=False,
+        description="Mark as urgent for expedited manager review"
+    )
+
+@tool
+def request_financial_approval(input: FinancialApprovalInput) -&gt; str:
+    """Submit a financial approval request with pre-filled defaults."""
+    urgency = "🚨 URGENT" if input.urgent else "📋 Standard"
+    return f"""
+{urgency} Financial Approval Request Submitted
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Amount:   ${input.amount:,.2f} USD
+Reason:   {input.reason}
+Status:   Pending Department Review
+Tracking: WXO-REQ-{(hash(input.reason) % 100000):05d}
+"""</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0
+pydantic>=2.0.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: finance_approval_agent
+title: "Finance Approval Assistant"
+description: "Assists employees with submitting financial purchase requests with smart defaults."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are an enterprise finance assistant.
+  When a user requests financial approval, inspect their prompt for amounts and reasons.
+  If they do not specify an amount, use the tool's smart default.
+  Always confirm the submission details back to the user.
+tools:
+  - request_financial_approval</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n finance_approval_agent "I need financial approval for new test monitors for $3500"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🤖 finance_approval_agent ───────────────────────────────────────────╮
+│                                                                        │
+│  📋 Standard Financial Approval Request Submitted                      │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                              │
+│  Amount:   $3,500.00 USD                                               │
+│  Reason:   new test monitors                                           │
+│  Status:   Pending Department Review                                   │
+│  Tracking: WXO-REQ-84729                                               │
+│                                                                        │
+│  Your request has been submitted to the finance desk for processing.   │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>Pydantic v1 vs v2 compatibility:</strong> Ensure you use standard Pydantic Field definitions with ge/le constraints. WxO ADK 2.9+ bundles Pydantic v2.</li>
+  <li><strong>Default UI Rendering:</strong> When an agent invokes a tool in web chat with defaults, the parameters are pre-populated, dramatically decreasing conversational friction.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 2 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

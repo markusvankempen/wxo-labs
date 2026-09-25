@@ -1,0 +1,140 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Automating Agent CI/CD Lifecycle: Exporting, Versioning, and Promoting watsonx Orchestrate Agents</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 11 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Automating Agent CI/CD Lifecycle: Exporting, Versioning, and Promoting watsonx Orchestrate Agents" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>Manually re-creating tools and agents across Dev, Staging, and Production tenants is slow and error-prone. In this lab, we build a production-grade CI/CD pipeline using the Orchestrate CLI to export self-contained bundles, unpack dependencies, validate schemas, and promote across environments.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>cicd_promoter.py</code>)</h3>
+
+<pre><code class="language-python">#!/usr/bin/env python3
+import subprocess
+import os
+import sys
+
+def run_cmd(cmd):
+    print(f"👉 Executing: {cmd}")
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        print(f"❌ Error: {res.stderr}")
+        sys.exit(res.returncode)
+    return res.stdout
+
+def export_and_promote(agent_name, target_env="staging"):
+    bundle_path = f"/tmp/{agent_name}_bundle.zip"
+    print(f"📦 Step 1: Exporting {agent_name} from Dev...")
+    run_cmd(f"orchestrate agents export -n {agent_name} -k native -o {bundle_path}")
+
+    print(f"🔄 Step 2: Activating target environment '{target_env}'...")
+    run_cmd(f"orchestrate env activate {target_env}")
+
+    print(f"📥 Step 3: Unpacking and importing bundle to {target_env}...")
+    run_cmd(f"orchestrate agents import -f {bundle_path}")
+
+    print(f"✅ Promotion of '{agent_name}' to '{target_env}' COMPLETE!")
+
+if __name__ == "__main__":
+    export_and_promote("hello_world_greeter", target_env="staging")</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml"># Sample export manifest
+spec_version: v1
+kind: native
+name: hello_world_greeter
+title: "Hello World Greeter (v2.1.0)"
+model: ibm/granite-3-8b-instruct
+tools:
+  - greet_user</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">python3 cicd_promoter.py</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">👉 Executing: orchestrate agents export -n hello_world_greeter -k native -o /tmp/hello_world_greeter_bundle.zip
+👉 Executing: orchestrate env activate staging
+👉 Executing: orchestrate agents import -f /tmp/hello_world_greeter_bundle.zip
+✅ Promotion of 'hello_world_greeter' to 'staging' COMPLETE!</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>Connection Secrets Exclusion:</strong> Export bundles intentionally exclude raw API keys and connection passwords. Use environment-specific `.env` or KeyProtect vaults in staging/prod.</li>
+  <li><strong>Semantic Versioning:</strong> Always update the agent's title or version tag in YAML before committing to git.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 11 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

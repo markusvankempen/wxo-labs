@@ -1,0 +1,165 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 5 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>HTTP requests to watsonx Orchestrate tools will timeout if an operation takes longer than 30–60 seconds (such as training an ML model or aggregating 100,000 DB rows). In this lab, we build a non-blocking asynchronous pattern: start the background job, return an immediate Job ID to the user, and allow conversational polling for status.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>async_tools.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+import threading
+import uuid
+import time
+from datetime import datetime
+
+# In-memory job registry (use Redis/Postgres in production clusters)
+JOBS = {}
+
+@tool
+def start_background_job(job_name: str, duration_seconds: int = 15) -&gt; str:
+    """
+    Start a long-running background task asynchronously without blocking the chat.
+    """
+    job_id = str(uuid.uuid4())[:8]
+    JOBS[job_id] = {
+        'id': job_id,
+        'name': job_name,
+        'status': 'RUNNING',
+        'started_at': datetime.now().strftime("%H:%M:%S"),
+        'progress': '0%'
+    }
+
+    def worker():
+        for pct in [25, 50, 75, 100]:
+            time.sleep(duration_seconds / 4)
+            JOBS[job_id]['progress'] = f"{pct}%"
+        JOBS[job_id]['status'] = 'COMPLETED'
+        JOBS[job_id]['completed_at'] = datetime.now().strftime("%H:%M:%S")
+        JOBS[job_id]['result'] = f"Success: Dataset '{job_name}' processed (14,200 rows indexed)."
+
+    thread = threading.Thread(target=worker, daemon=True)
+    thread.start()
+
+    return f"🚀 Background job '{job_name}' dispatched! Job ID: {job_id}. You can continue chatting while it runs."
+
+@tool
+def check_job_status(job_id: str) -&gt; str:
+    """Check the status and output of a running background job."""
+    job = JOBS.get(job_id)
+    if not job:
+        return f"❌ Job ID '{job_id}' not found."
+    
+    if job['status'] == 'COMPLETED':
+        return f"✅ Job {job_id} [{job['name']}] COMPLETED at {job['completed_at']}: {job['result']}"
+    else:
+        return f"⏳ Job {job_id} [{job['name']}] is STILL RUNNING (Progress: {job['progress']}). Started at {job['started_at']}."</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: async_job_manager
+title: "Async Job Dispatcher"
+description: "Dispatches and monitors asynchronous long-running batch operations."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are a background operations assistant. When a user asks to run an extensive task,
+  dispatch it using `start_background_job` and give them their Job ID.
+  When they query status, use `check_job_status`.
+tools:
+  - start_background_job
+  - check_job_status</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n async_job_manager "Start data aggregation for Q3 Sales"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🤖 async_job_manager ─────────────────────────────────────────────────╮
+│                                                                        │
+│  🚀 Background job 'Q3 Sales' dispatched! Job ID: 4f8a19de.             │
+│  Feel free to ask other questions while the pipeline executes!         │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>State Persistence in Containers:</strong> In multi-pod Kubernetes or serverless cloud environments, worker memory is isolated. In production, back your JOBS store with Redis or Cloudant.</li>
+  <li><strong>Gateway Timeout Prevention:</strong> Always return within 2 seconds of invoking `start_background_job` to maintain responsiveness.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 5 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

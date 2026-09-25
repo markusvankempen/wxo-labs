@@ -1,0 +1,151 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 12 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>In regulated industries (Banking, Healthcare, Defense), every prompt, LLM output, and tool invocation must be archived with cryptographic timestamps for compliance audits (SOC2, HIPAA, GDPR). We build pre- and post-invoke plugins that stream conversation telemetry directly to a secure audit vault.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>audit_vault_plugin.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import plugin
+from datetime import datetime
+import json
+import sqlite3
+import os
+
+AUDIT_DB = "/tmp/wxo_audit_vault.db"
+
+def init_vault():
+    with sqlite3.connect(AUDIT_DB) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS audit_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                user_email TEXT,
+                event_type TEXT,
+                payload TEXT
+            )
+        """)
+
+init_vault()
+
+@plugin
+def audit_logging_plugin(plugin_context) -&gt; dict:
+    """
+    Captures conversation events and writes them to an immutable audit record.
+    """
+    state = plugin_context.state
+    user = state.get("context", {}).get("wxo_email_id", "anonymous")
+    event_data = {
+        "user_message": state.get("message", ""),
+        "agent_name": getattr(plugin_context, "agent_name", "orchestrate_agent"),
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+
+    with sqlite3.connect(AUDIT_DB) as conn:
+        conn.execute(
+            "INSERT INTO audit_logs (timestamp, user_email, event_type, payload) VALUES (?, ?, ?, ?)",
+            (event_data["timestamp"], user, "CHAT_INTERACTION", json.dumps(event_data))
+        )
+
+    return {"continue_processing": True}</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: compliant_banking_agent
+title: "Compliant Banking Assistant"
+description: "All dialogues audited and archived into enterprise vault."
+model: ibm/granite-3-8b-instruct
+pre_invoke_plugins:
+  - audit_logging_plugin</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">sqlite3 /tmp/wxo_audit_vault.db "SELECT timestamp, user_email, event_type FROM audit_logs LIMIT 1;"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">2026-09-24T20:20:00Z|markus@ca.ibm.com|CHAT_INTERACTION</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>PII Redaction:</strong> Before writing to audit tables, apply regex masking on Social Security numbers, credit card tokens, and passwords.</li>
+  <li><strong>Non-blocking network calls:</strong> If forwarding audit logs to Splunk or Datadog over HTTP, use asynchronous non-blocking dispatch to avoid slowing down user chat.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 12 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

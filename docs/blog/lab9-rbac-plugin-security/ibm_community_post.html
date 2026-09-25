@@ -1,0 +1,160 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Securing AI Agents with RBAC Pre-Invoke Plugins in watsonx Orchestrate: Multi-Role Authorization</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 9 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Securing AI Agents with RBAC Pre-Invoke Plugins in watsonx Orchestrate: Multi-Role Authorization" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>Some AI agents have access to privileged actions (rebooting servers, deleting records, viewing payroll). Before the agent's LLM even processes a user prompt, a pre-invoke plugin intercepts the request, verifies the caller's enterprise roles, and terminates execution immediately if unauthorized.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>rbac_plugin.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import plugin
+
+ROLE_DIRECTORY = {
+    "markus@ca.ibm.com": ["admin", "devops"],
+    "alice@company.com": ["manager"],
+    "guest@partner.com": ["viewer"]
+}
+
+PERMITTED_ROLES = ["admin", "devops"]
+
+@plugin
+def rbac_pre_invoke(plugin_context) -&gt; dict:
+    """
+    Pre-invoke security gatekeeper.
+    Evaluates caller identity against access control rules before LLM invocation.
+    """
+    context = plugin_context.state.get("context", {})
+    user_email = context.get("wxo_email_id", "guest@partner.com")
+    assigned_roles = ROLE_DIRECTORY.get(user_email, [])
+
+    is_authorized = any(role in PERMITTED_ROLES for role in assigned_roles)
+
+    if is_authorized:
+        return {"continue_processing": True}
+    else:
+        return {
+            "continue_processing": False,
+            "message": f"""
+🚫 Access Denied (HTTP 403 Forbidden)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+User:      {user_email}
+Required:  {", ".join(PERMITTED_ROLES)}
+Assigned:  {", ".join(assigned_roles) if assigned_roles else "None"}
+
+You do not possess the required security roles to interact with this agent.
+Contact the security operations desk for role escalation.
+"""
+        }</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: devops_remediation_agent
+title: "DevOps Infrastructure Remediation Agent"
+description: "High-privilege agent restricted to certified DevOps admins."
+model: ibm/granite-3-8b-instruct
+pre_invoke_plugins:
+  - rbac_pre_invoke
+instructions: |
+  You are an infrastructure recovery assistant with cluster administration rights.
+tools:
+  - restart_kubernetes_pod</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n devops_remediation_agent "Restart production payment pod"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🚫 rbac_pre_invoke ───────────────────────────────────────────────────╮
+│                                                                        │
+│  🚫 Access Denied (HTTP 403 Forbidden)                                 │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                             │
+│  User:      guest@partner.com                                          │
+│  Required:  admin, devops                                              │
+│  Assigned:  viewer                                                     │
+│                                                                        │
+│  You do not possess the required security roles to interact.           │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>continue_processing flag:</strong> Setting `continue_processing: False` completely bypasses model inference, saving token costs and completely eliminating prompt-injection attacks.</li>
+  <li><strong>Audit Logging:</strong> Combine pre-invoke RBAC with persistent audit logging to record unauthorized attempts.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 9 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

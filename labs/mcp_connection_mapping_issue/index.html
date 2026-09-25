@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deploying Remote Containerized MCP Servers on IBM Cloud Code Engine: Overcoming 422 Gateway Errors & SSE Handshakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-code: #0d131f;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(15, 98, 254, 0.4);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --ibm-blue: #0f62fe;
+      --ibm-cyan: #00d3ff;
+      --accent-purple: #8a3ffc;
+      --gradient-brand: linear-gradient(135deg, #0f62fe 0%, #00d3ff 50%, #8a3ffc 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --shadow-glow: 0 0 35px rgba(15, 98, 254, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-brand); z-index: 1000; width: 0%; }
+    .navbar {
+      position: sticky; top: 0; background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;
+      font-weight: 600; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0353e9; transform: translateY(-1px); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 1rem; }
+    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .hero-banner { width: 100%; border-radius: var(--radius-md); margin: 2rem 0; box-shadow: var(--shadow-glow); border: 1px solid var(--border); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
+    pre { background: var(--bg-code); padding: 1.25rem; border-radius: var(--radius-sm); overflow-x: auto; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; margin: 1rem 0; }
+    code { font-family: 'JetBrains Mono', monospace; color: var(--ibm-cyan); }
+    hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <nav class="navbar">
+    <a href="https://markusvankempen.github.io/wxo-labs/" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
+      <span>WXO Labs Series</span>
+    </a>
+    <div class="nav-actions">
+      <a href="ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Raw Community HTML</a>
+      <a href="https://markusvankempen.github.io/wxo-labs/" class="btn btn-primary">Portal Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <span class="badge">Part 15 of 15 &bull; 🔴 Advanced &bull; ⏱️ 120 minutes</span>
+    <h1>Deploying Remote Containerized MCP Servers on IBM Cloud Code Engine: Overcoming 422 Gateway Errors & SSE Handshakes</h1>
+    <p style="color: var(--text-secondary); font-size: 1.1rem;">Architecting containerized Node.js/Python MCP microservices, configuring streamable HTTP / SSE, and solving gateway connection mapping issues.</p>
+    
+    <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Deploying Remote Containerized MCP Servers on IBM Cloud Code Engine: Overcoming 422 Gateway Errors & SSE Handshakes" class="hero-banner">
+
+    <div class="card">
+      <h3 style="margin-bottom:0.75rem; color:var(--ibm-cyan);">Why This Pattern Matters</h3>
+      <p>In production, Model Context Protocol servers run as microservices on serverless platforms like IBM Cloud Code Engine, Kubernetes, or OpenShift. When connecting Watsonx Orchestrate to a remote MCP server, developers often encounter 'Gateway creation failed: 422' due to protocol mismatches or authentication header stripping. This lab provides the battle-tested blueprint.</p>
+    </div>
+
+    <hr>
+
+    <h2>Step 1: Write Tool Logic (<code>server.js</code>)</h2>
+    <pre><code>import express from "express";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { z } from "zod";
+
+const app = express();
+const server = new McpServer({
+  name: "enterprise-ticket-mcp",
+  version: "1.0.0"
+});
+
+server.tool(
+  "query_incident",
+  "Lookup incident details from enterprise ITSM",
+  { incident_id: z.string().describe("Incident ticket identifier, e.g. INC-1029") },
+  async ({ incident_id }) =&gt; {
+    return {
+      content: [{
+        type: "text",
+        text: `Incident ${incident_id}: High CPU Alert in cluster ca-tor. Status: Investigating.`
+      }]
+    };
+  }
+);
+
+let transport = null;
+
+app.get("/sse", async (req, res) =&gt; {
+  console.log("👉 [WxO Handshake] SSE Connection established");
+  transport = new SSEServerTransport("/message", res);
+  await server.connect(transport);
+});
+
+app.post("/message", async (req, res) =&gt; {
+  if (transport) {
+    await transport.handlePostMessage(req, res);
+  } else {
+    res.status(400).send("No active transport");
+  }
+});
+
+app.get("/health", (req, res) =&gt; res.json({ status: "healthy", timestamp: new Date() }));
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () =&gt; console.log(`🚀 Remote MCP server listening on port ${PORT}`));</code></pre>
+
+    <h2>Step 2: Dependencies (<code>requirements.txt</code>)</h2>
+    <pre><code>express>=4.18.2
+@modelcontextprotocol/sdk>=1.0.1
+zod>=3.22.0</code></pre>
+
+    <h2>Step 3: Agent Manifest (<code>agent.yaml</code>)</h2>
+    <pre><code>spec_version: v1
+kind: native
+name: remote_incident_agent
+title: "Remote Incident Commander"
+description: "Connects to containerized MCP microservices running on IBM Cloud Code Engine."
+model: ibm/granite-3-8b-instruct
+tools:
+  - query_incident</code></pre>
+
+    <h2>Step 4: Live Execution</h2>
+    <pre><code>curl -i https://mcp-ticket-demo.ca-tor.codeengine.appdomain.cloud/health</code></pre>
+    <pre><code>HTTP/2 200 
+content-type: application/json; charset=utf-8
+{
+  "status": "healthy",
+  "timestamp": "2026-09-24T20:30:00.000Z"
+}</code></pre>
+
+    <hr>
+
+    <h2>💡 Pro Tips &amp; Architecture Insights</h2>
+    <div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 Gateway creation failed: 422</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">This occurs when the WXO gateway expects Streamable HTTP (`/mcp`) but the server only implements SSE (`/sse`), or when required authentication headers are missing from the toolkit connection YAML.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 SSE Keep-Alive</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Ensure your container reverse proxy (Nginx or Cloudflare) does not buffer Server-Sent Events with `proxy_buffering off;`.</p>
+</div>
+
+    <hr>
+    <div style="text-align:center; padding:2rem 0;">
+      <a href="ibm_community_post.html" class="btn btn-primary" style="padding:0.75rem 1.75rem; font-size:1rem;">📋 Open IBM Community Ready HTML</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+  </script>
+</body>
+</html>

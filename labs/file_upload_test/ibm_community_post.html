@@ -1,0 +1,164 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 3 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>Managers often receive spreadsheet rosters or sales dumps and need instant summaries without opening Excel. In this lab, we build an agent capable of ingesting uploaded Excel (.xlsx) workbooks directly from the chat interface, running automated Pandas analytics, and returning instant KPI summaries.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>file_processor.py</code>)</h3>
+
+<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+import pandas as pd
+import os
+
+@tool
+def analyze_employee_data(file_path: str) -&gt; str:
+    """
+    Analyze employee data from an uploaded Excel spreadsheet.
+
+    Args:
+        file_path: Absolute filesystem path to the uploaded Excel file.
+
+    Returns:
+        Structured summary statistics and department breakdown.
+    """
+    try:
+        if not os.path.exists(file_path):
+            return f"❌ File not found at path: {file_path}"
+
+        df = pd.read_excel(file_path)
+        total_records = len(df)
+        columns = ", ".join(df.columns.tolist())
+        
+        dept_counts = df['Department'].value_counts().to_dict() if 'Department' in df.columns else {}
+        avg_salary = f"${df['Salary'].mean():,.2f}" if 'Salary' in df.columns else "N/A"
+
+        return f"""
+📊 Spreadsheet Analytics Summary
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Headcount:    {total_records}
+Detected Columns:   {columns}
+Average Base Pay:   {avg_salary}
+
+Department Breakdown:
+{chr(10).join([f"  • {dept}: {count}" for dept, count in dept_counts.items()])}
+"""
+    except Exception as e:
+        return f"❌ Error processing Excel file: {str(e)}"</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0
+pandas>=2.0.0
+openpyxl>=3.1.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: hr_data_analyst
+title: "HR Data Analyst"
+description: "Ingests user-uploaded spreadsheets to extract headcount and department statistics."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are an HR analytics assistant. When a user uploads or references an Excel file,
+  call `analyze_employee_data` passing the file path, and summarize the key findings.
+tools:
+  - analyze_employee_data</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n hr_data_analyst "Analyze this spreadsheet: /tmp/sample_employees.xlsx"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🤖 hr_data_analyst ───────────────────────────────────────────────────╮
+│                                                                        │
+│  📊 Spreadsheet Analytics Summary                                      │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                     │
+│  Total Headcount:    3                                                 │
+│  Detected Columns:   Employee_ID, Name, Department, Salary             │
+│  Average Base Pay:   $78,333.33                                        │
+│                                                                        │
+│  Department Breakdown:                                                 │
+│    • Engineering: 1                                                    │
+│    • Sales: 1                                                          │
+│    • HR: 1                                                             │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>File Path Hand-off:</strong> In watsonx Orchestrate WebChat, uploaded files are staged in the execution container. Always pass the exact file_path string supplied by the runtime.</li>
+  <li><strong>Excel Engine:</strong> Ensure `openpyxl` is specified in `requirements.txt` whenever reading `.xlsx` files with pandas.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 3 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>

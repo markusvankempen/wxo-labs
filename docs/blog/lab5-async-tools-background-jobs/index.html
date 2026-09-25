@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-code: #0d131f;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(15, 98, 254, 0.4);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --ibm-blue: #0f62fe;
+      --ibm-cyan: #00d3ff;
+      --accent-purple: #8a3ffc;
+      --gradient-brand: linear-gradient(135deg, #0f62fe 0%, #00d3ff 50%, #8a3ffc 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --shadow-glow: 0 0 35px rgba(15, 98, 254, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-brand); z-index: 1000; width: 0%; }
+    .navbar {
+      position: sticky; top: 0; background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;
+      font-weight: 600; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0353e9; transform: translateY(-1px); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 1rem; }
+    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .hero-banner { width: 100%; border-radius: var(--radius-md); margin: 2rem 0; box-shadow: var(--shadow-glow); border: 1px solid var(--border); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
+    pre { background: var(--bg-code); padding: 1.25rem; border-radius: var(--radius-sm); overflow-x: auto; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; margin: 1rem 0; }
+    code { font-family: 'JetBrains Mono', monospace; color: var(--ibm-cyan); }
+    hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <nav class="navbar">
+    <a href="https://markusvankempen.github.io/wxo-labs/" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
+      <span>WXO Labs Series</span>
+    </a>
+    <div class="nav-actions">
+      <a href="ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Raw Community HTML</a>
+      <a href="https://markusvankempen.github.io/wxo-labs/" class="btn btn-primary">Portal Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <span class="badge">Part 5 of 15 &bull; 🟡 Intermediate &bull; ⏱️ 120 minutes</span>
+    <h1>Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks</h1>
+    <p style="color: var(--text-secondary); font-size: 1.1rem;">Preventing gateway timeouts by dispatching long-running tasks into asynchronous background workers with job polling.</p>
+    
+    <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks" class="hero-banner">
+
+    <div class="card">
+      <h3 style="margin-bottom:0.75rem; color:var(--ibm-cyan);">Why This Pattern Matters</h3>
+      <p>HTTP requests to watsonx Orchestrate tools will timeout if an operation takes longer than 30–60 seconds (such as training an ML model or aggregating 100,000 DB rows). In this lab, we build a non-blocking asynchronous pattern: start the background job, return an immediate Job ID to the user, and allow conversational polling for status.</p>
+    </div>
+
+    <hr>
+
+    <h2>Step 1: Write Tool Logic (<code>async_tools.py</code>)</h2>
+    <pre><code>from ibm_watsonx_orchestrate import tool
+import threading
+import uuid
+import time
+from datetime import datetime
+
+# In-memory job registry (use Redis/Postgres in production clusters)
+JOBS = {}
+
+@tool
+def start_background_job(job_name: str, duration_seconds: int = 15) -&gt; str:
+    """
+    Start a long-running background task asynchronously without blocking the chat.
+    """
+    job_id = str(uuid.uuid4())[:8]
+    JOBS[job_id] = {
+        'id': job_id,
+        'name': job_name,
+        'status': 'RUNNING',
+        'started_at': datetime.now().strftime("%H:%M:%S"),
+        'progress': '0%'
+    }
+
+    def worker():
+        for pct in [25, 50, 75, 100]:
+            time.sleep(duration_seconds / 4)
+            JOBS[job_id]['progress'] = f"{pct}%"
+        JOBS[job_id]['status'] = 'COMPLETED'
+        JOBS[job_id]['completed_at'] = datetime.now().strftime("%H:%M:%S")
+        JOBS[job_id]['result'] = f"Success: Dataset '{job_name}' processed (14,200 rows indexed)."
+
+    thread = threading.Thread(target=worker, daemon=True)
+    thread.start()
+
+    return f"🚀 Background job '{job_name}' dispatched! Job ID: {job_id}. You can continue chatting while it runs."
+
+@tool
+def check_job_status(job_id: str) -&gt; str:
+    """Check the status and output of a running background job."""
+    job = JOBS.get(job_id)
+    if not job:
+        return f"❌ Job ID '{job_id}' not found."
+    
+    if job['status'] == 'COMPLETED':
+        return f"✅ Job {job_id} [{job['name']}] COMPLETED at {job['completed_at']}: {job['result']}"
+    else:
+        return f"⏳ Job {job_id} [{job['name']}] is STILL RUNNING (Progress: {job['progress']}). Started at {job['started_at']}."</code></pre>
+
+    <h2>Step 2: Dependencies (<code>requirements.txt</code>)</h2>
+    <pre><code>ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+    <h2>Step 3: Agent Manifest (<code>agent.yaml</code>)</h2>
+    <pre><code>spec_version: v1
+kind: native
+name: async_job_manager
+title: "Async Job Dispatcher"
+description: "Dispatches and monitors asynchronous long-running batch operations."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are a background operations assistant. When a user asks to run an extensive task,
+  dispatch it using `start_background_job` and give them their Job ID.
+  When they query status, use `check_job_status`.
+tools:
+  - start_background_job
+  - check_job_status</code></pre>
+
+    <h2>Step 4: Live Execution</h2>
+    <pre><code>orchestrate chat ask -n async_job_manager "Start data aggregation for Q3 Sales"</code></pre>
+    <pre><code>╭─ 🤖 async_job_manager ─────────────────────────────────────────────────╮
+│                                                                        │
+│  🚀 Background job 'Q3 Sales' dispatched! Job ID: 4f8a19de.             │
+│  Feel free to ask other questions while the pipeline executes!         │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+    <hr>
+
+    <h2>💡 Pro Tips &amp; Architecture Insights</h2>
+    <div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 State Persistence in Containers</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">In multi-pod Kubernetes or serverless cloud environments, worker memory is isolated. In production, back your JOBS store with Redis or Cloudant.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 Gateway Timeout Prevention</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Always return within 2 seconds of invoking `start_background_job` to maintain responsiveness.</p>
+</div>
+
+    <hr>
+    <div style="text-align:center; padding:2rem 0;">
+      <a href="ibm_community_post.html" class="btn btn-primary" style="padding:0.75rem 1.75rem; font-size:1rem;">📋 Open IBM Community Ready HTML</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+  </script>
+</body>
+</html>

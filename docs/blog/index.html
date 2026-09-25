@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WXO Labs Blog Series: 15-Part Hands-On Developer Journey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --ibm-blue: #0f62fe;
+      --ibm-cyan: #00d3ff;
+      --accent-purple: #8a3ffc;
+      --gradient-brand: linear-gradient(135deg, #0f62fe 0%, #00d3ff 50%, #8a3ffc 100%);
+      --radius-md: 14px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .navbar {
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 14, 23, 0.9);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;
+      font-weight: 600; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s ease;
+    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; }
+    .btn-primary:hover { background: #0353e9; }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .header-section { text-align: center; margin-bottom: 3.5rem; }
+    .header-section h1 { font-size: 2.8rem; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+    .header-section p { color: var(--text-secondary); font-size: 1.15rem; max-width: 650px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .blog-card:hover { transform: translateY(-3px); border-color: rgba(15, 98, 254, 0.4); }
+    .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .badge { font-size: 0.75rem; font-weight: 700; color: var(--ibm-cyan); text-transform: uppercase; }
+    .duration { font-size: 0.75rem; color: var(--text-secondary); }
+    .blog-card h3 { font-size: 1.15rem; line-height: 1.4; margin-bottom: 0.5rem; }
+    .blog-card h3 a { color: #fff; text-decoration: none; }
+    .blog-card h3 a:hover { color: var(--ibm-cyan); }
+    .difficulty { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; }
+    .card-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="../index.html" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
+      <span>WXO Labs Series</span>
+    </a>
+    <div>
+      <a href="../index.html" class="btn btn-primary">Interactive Portal &rarr;</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header-section">
+      <h1>🎓 WXO Community Blog Series</h1>
+      <p>15 hands-on developer tutorials taking you from your first Python tool to enterprise production architectures.</p>
+    </div>
+
+    <div class="grid">
+      
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 1 of 15</span>
+            <span class="duration">⏱️ 30 minutes</span>
+          </div>
+          <h3><a href="getting-started-watsonx-orchestrate/index.html">Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes</a></h3>
+          <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div class="card-actions">
+            <a href="getting-started-watsonx-orchestrate/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="getting-started-watsonx-orchestrate/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 2 of 15</span>
+            <span class="duration">⏱️ 45 minutes</span>
+          </div>
+          <h3><a href="lab2-input-defaults/index.html">Input Defaults & UI Patterns in watsonx Orchestrate: Supercharging UX with Smart Pydantic Schemas</a></h3>
+          <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div class="card-actions">
+            <a href="lab2-input-defaults/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab2-input-defaults/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 3 of 15</span>
+            <span class="duration">⏱️ 60 minutes</span>
+          </div>
+          <h3><a href="lab3-file-upload-processing/index.html">Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent</a></h3>
+          <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div class="card-actions">
+            <a href="lab3-file-upload-processing/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab3-file-upload-processing/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 4 of 15</span>
+            <span class="duration">⏱️ 90 minutes</span>
+          </div>
+          <h3><a href="lab4-context-injection/index.html">Injecting Ambient User Context & Identity in watsonx Orchestrate: Personalizing AI Agents</a></h3>
+          <p class="difficulty">🟡 Intermediate</p>
+          <div class="card-actions">
+            <a href="lab4-context-injection/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab4-context-injection/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 5 of 15</span>
+            <span class="duration">⏱️ 120 minutes</span>
+          </div>
+          <h3><a href="lab5-async-tools-background-jobs/index.html">Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks</a></h3>
+          <p class="difficulty">🟡 Intermediate</p>
+          <div class="card-actions">
+            <a href="lab5-async-tools-background-jobs/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab5-async-tools-background-jobs/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 6 of 15</span>
+            <span class="duration">⏱️ 90 minutes</span>
+          </div>
+          <h3><a href="lab6-file-downloads-streaming/index.html">Streaming Dynamic Files & PDF Generation in watsonx Orchestrate: Delivering On-Demand Reports</a></h3>
+          <p class="difficulty">🟡 Intermediate</p>
+          <div class="card-actions">
+            <a href="lab6-file-downloads-streaming/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab6-file-downloads-streaming/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 7 of 15</span>
+            <span class="duration">⏱️ 90 minutes</span>
+          </div>
+          <h3><a href="lab7-mcp-basics/index.html">Getting Started with Model Context Protocol (MCP) in watsonx Orchestrate: Connecting Agents to External Sidecars</a></h3>
+          <p class="difficulty">🟡 Intermediate</p>
+          <div class="card-actions">
+            <a href="lab7-mcp-basics/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab7-mcp-basics/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 8 of 15</span>
+            <span class="duration">⏱️ 120 minutes</span>
+          </div>
+          <h3><a href="lab8-mcp-advanced-user-context/index.html">Enterprise Security with MCP & watsonx Orchestrate: Passing User Context and Bearer Tokens to Sidecars</a></h3>
+          <p class="difficulty">🔴 Advanced</p>
+          <div class="card-actions">
+            <a href="lab8-mcp-advanced-user-context/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab8-mcp-advanced-user-context/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 9 of 15</span>
+            <span class="duration">⏱️ 120 minutes</span>
+          </div>
+          <h3><a href="lab9-rbac-plugin-security/index.html">Securing AI Agents with RBAC Pre-Invoke Plugins in watsonx Orchestrate: Multi-Role Authorization</a></h3>
+          <p class="difficulty">🔴 Advanced</p>
+          <div class="card-actions">
+            <a href="lab9-rbac-plugin-security/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab9-rbac-plugin-security/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 10 of 15</span>
+            <span class="duration">⏱️ 180 minutes</span>
+          </div>
+          <h3><a href="lab10-sso-entra-id/index.html">Enterprise SSO & SAML Identity Propagation in watsonx Orchestrate: Connecting Microsoft Entra ID</a></h3>
+          <p class="difficulty">🔴 Advanced</p>
+          <div class="card-actions">
+            <a href="lab10-sso-entra-id/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab10-sso-entra-id/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 11 of 15</span>
+            <span class="duration">⏱️ 150 minutes</span>
+          </div>
+          <h3><a href="lab11-agent-cicd-lifecycle/index.html">Automating Agent CI/CD Lifecycle: Exporting, Versioning, and Promoting watsonx Orchestrate Agents</a></h3>
+          <p class="difficulty">🔴 Advanced</p>
+          <div class="card-actions">
+            <a href="lab11-agent-cicd-lifecycle/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab11-agent-cicd-lifecycle/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 12 of 15</span>
+            <span class="duration">⏱️ 240 minutes</span>
+          </div>
+          <h3><a href="lab12-conversation-audit-vault/index.html">Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate</a></h3>
+          <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div class="card-actions">
+            <a href="lab12-conversation-audit-vault/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab12-conversation-audit-vault/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 13 of 15</span>
+            <span class="duration">⏱️ 240 minutes</span>
+          </div>
+          <h3><a href="lab13-observability-dashboard/index.html">Live Observability & Telemetry for watsonx Orchestrate: Monitoring Agent Health, Latency, and Token Spend</a></h3>
+          <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div class="card-actions">
+            <a href="lab13-observability-dashboard/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab13-observability-dashboard/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 14 of 15</span>
+            <span class="duration">⏱️ 300 minutes</span>
+          </div>
+          <h3><a href="lab14-rag-evaluation-pipeline/index.html">Evaluating Enterprise RAG Pipelines in watsonx Orchestrate: Automated Quality Metrics with Ragas</a></h3>
+          <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div class="card-actions">
+            <a href="lab14-rag-evaluation-pipeline/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab14-rag-evaluation-pipeline/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-meta">
+            <span class="badge">Part 15 of 15</span>
+            <span class="duration">⏱️ 120 minutes</span>
+          </div>
+          <h3><a href="lab15-remote-mcp-code-engine/index.html">Deploying Remote Containerized MCP Servers on IBM Cloud Code Engine: Overcoming 422 Gateway Errors & SSE Handshakes</a></h3>
+          <p class="difficulty">🔴 Advanced</p>
+          <div class="card-actions">
+            <a href="lab15-remote-mcp-code-engine/index.html" class="btn btn-primary">Read Guide &rarr;</a>
+            <a href="lab15-remote-mcp-code-engine/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+</body>
+</html>

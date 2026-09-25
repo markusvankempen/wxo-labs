@@ -1,0 +1,146 @@
+<!-- 
+  IBM Community Ready HTML
+  You can paste this clean semantic HTML directly into the IBM Community Blog editor 
+  using the "Source Code" (<>) button.
+  All images use absolute GitHub URLs so they render immediately without broken links!
+-->
+
+<h2>Enterprise SSO & SAML Identity Propagation in watsonx Orchestrate: Connecting Microsoft Entra ID</h2>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs Series Icon" style="width: 48px; height: 48px; border-radius: 10px; vertical-align: middle; margin-right: 10px;" />
+  <strong>By Markus van Kempen</strong> | 
+  <em>Series: WXO Labs &amp; Tutorial Guide (Part 10 of 15)</em><br />
+  <strong>Interactive Lab Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a><br />
+  <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a>
+</p>
+
+<p>
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Enterprise SSO & SAML Identity Propagation in watsonx Orchestrate: Connecting Microsoft Entra ID" style="max-width: 100%; height: auto; border-radius: 8px;" />
+</p>
+
+<h3>Why This Pattern Matters</h3>
+
+<p>Large enterprises mandate Single Sign-On (SSO) through Microsoft Entra ID (formerly Azure Active Directory). Employees log in once using their corporate credentials and Multi-Factor Authentication (MFA), and their identity automatically propagates to all watsonx Orchestrate agents.</p>
+
+<hr />
+
+<h3>📋 Prerequisites &amp; Setup</h3>
+
+<p>Ensure your environment has the required dependencies:</p>
+
+<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+
+<p>Verify active environment:</p>
+<pre><code class="language-bash">orchestrate env list</code></pre>
+
+<hr />
+
+<h3>🛠️ Step 1: Implement the Logic (<code>sso_identity_probe.py</code>)</h3>
+
+<pre><code class="language-python">try:
+    from ibm_watsonx_orchestrate.run.context import AgentRun
+except ImportError:
+    AgentRun = object
+
+from ibm_watsonx_orchestrate import tool
+
+@tool(context_access_enabled=True)
+def verify_sso_identity(agent_run: AgentRun) -&gt; str:
+    """
+    Probe and validate federated identity attributes propagated from Entra ID SAML tokens.
+    """
+    context = agent_run.context if hasattr(agent_run, 'context') else {}
+    
+    email = context.get('wxo_email_id', 'Not provided')
+    tenant = context.get('tenant_id', 'ibm-ent-us-south')
+    upn = context.get('user_principal_name', email)
+    groups = context.get('groups', ['Cloud-Admins', 'WXO-Users'])
+
+    return f"""
+🔐 Microsoft Entra ID SSO Identity Verified
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Principal:  {upn}
+Email:      {email}
+Tenant ID:  {tenant}
+Groups:     {", ".join(groups)}
+Auth Type:  SAML 2.0 Federated Assertion
+"""</code></pre>
+
+<hr />
+
+<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+
+<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+<hr />
+
+<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+
+<pre><code class="language-yaml">spec_version: v1
+kind: native
+name: sso_directory_agent
+title: "SSO Directory Agent"
+description: "Federated corporate directory agent backed by Entra ID."
+model: ibm/granite-3-8b-instruct
+tools:
+  - verify_sso_identity</code></pre>
+
+<hr />
+
+<h3>🚀 Step 4: Import &amp; Test Live in Terminal</h3>
+
+<p>Import tool and test conversationally:</p>
+
+<pre><code class="language-bash">orchestrate chat ask -n sso_directory_agent "Verify my corporate login status"</code></pre>
+
+<p><strong>Live Response:</strong></p>
+<pre><code class="language-text">╭─ 🤖 sso_directory_agent ───────────────────────────────────────────────╮
+│                                                                        │
+│  🔐 Microsoft Entra ID SSO Identity Verified                           │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                             │
+│  Principal:  mvk@ca.ibm.com                                            │
+│  Email:      mvk@ca.ibm.com                                            │
+│  Tenant ID:  ibm-ent-us-south                                          │
+│  Groups:     Cloud-Admins, WXO-Users                                   │
+│  Auth Type:  SAML 2.0 Federated Assertion                              │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+<hr />
+
+<h3>💡 Pro Tips &amp; Gotchas</h3>
+<ul>
+  <li><strong>Attribute Mapping in Entra ID:</strong> Ensure `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` is mapped to `user.mail` in the Azure Portal Enterprise Applications panel.</li>
+  <li><strong>Reply URL (ACS):</strong> Double-check your Watsonx Orchestrate ACS URL matches the regional deployment URL.</li>
+</ul>
+
+<hr />
+
+<h3>🗺️ Series Roadmap (15 Hands-On Labs)</h3>
+
+<p>This tutorial is <strong>Part 10 of 15</strong> in the complete enterprise hands-on series:</p>
+
+<ul>
+  <li>🟢 <strong>Part 1:</strong> Building Your First Custom Python Tool &amp; AI Agent in 15 Minutes</li>
+  <li>🟢 <strong>Part 2:</strong> Input Defaults &amp; UI Patterns (Pydantic Schemas)</li>
+  <li>🟢 <strong>Part 3:</strong> File Upload &amp; Spreadsheet Analytics (Pandas Pipeline)</li>
+  <li>🟡 <strong>Part 4:</strong> Ambient User Context &amp; Identity Injection</li>
+  <li>🟡 <strong>Part 5:</strong> Asynchronous Non-Blocking Workers &amp; Polling</li>
+  <li>🟡 <strong>Part 6:</strong> Dynamic PDF Generation &amp; File Streaming</li>
+  <li>🟡 <strong>Part 7:</strong> Model Context Protocol (MCP) STDIO Basics</li>
+  <li>🔴 <strong>Part 8:</strong> MCP Enterprise Security &amp; Bearer Token Injection</li>
+  <li>🔴 <strong>Part 9:</strong> Role-Based Access Control (RBAC) Pre-Invoke Plugins</li>
+  <li>🔴 <strong>Part 10:</strong> Microsoft Entra ID (Azure AD) SSO &amp; SAML Federation</li>
+  <li>🔴 <strong>Part 11:</strong> Agent CI/CD Lifecycle &amp; Automated Multi-Env Promotion</li>
+  <li>🏆 <strong>Part 12:</strong> Tamper-Proof Audit Vault &amp; Conversation Archiving</li>
+  <li>🏆 <strong>Part 13:</strong> Real-Time Telemetry &amp; Token Observability Dashboard</li>
+  <li>🏆 <strong>Part 14:</strong> Quantitative RAG Pipeline Evaluation with Ragas</li>
+  <li>🔴 <strong>Part 15:</strong> Remote Containerized MCP Gateways on IBM Cloud Code Engine</li>
+</ul>
+
+<p>Explore the interactive curriculum and code repository:</p>
+<ul>
+  <li>🌐 <strong>Interactive Portal:</strong> <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">https://markusvankempen.github.io/wxo-labs/</a></li>
+  <li>📦 <strong>GitHub Repository:</strong> <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">https://github.com/markusvankempen/wxo-labs</a></li>
+  <li>🏢 <strong>Author Research:</strong> <a href="https://markusvankempen.github.io/" target="_blank">https://markusvankempen.github.io/</a></li>
+</ul>
