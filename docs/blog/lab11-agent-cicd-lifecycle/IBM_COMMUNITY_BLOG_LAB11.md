@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#CI/CD` `#DevOps` `#AgentLifecycle` `#CLIAutomation` `#GitOps` `#DeploymentPipeline`
 
 ---
 
@@ -106,6 +107,12 @@ python3 cicd_promoter.py
 - **Connection Secrets Exclusion:** Export bundles intentionally exclude raw API keys and connection passwords. Use environment-specific `.env` or KeyProtect vaults in staging/prod.
 - **Semantic Versioning:** Always update the agent's title or version tag in YAML before committing to git.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#CI/CD` `#DevOps` `#AgentLifecycle` `#CLIAutomation` `#GitOps` `#DeploymentPipeline`
 
 ---
 

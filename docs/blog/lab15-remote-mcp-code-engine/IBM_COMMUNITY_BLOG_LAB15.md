@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#RemoteMCP` `#IBMCloudCodeEngine` `#Server-SentEvents` `#SSE` `#Gateway422` `#Microservices`
 
 ---
 
@@ -127,6 +128,12 @@ content-type: application/json; charset=utf-8
 - **Gateway creation failed: 422:** This occurs when the WXO gateway expects Streamable HTTP (`/mcp`) but the server only implements SSE (`/sse`), or when required authentication headers are missing from the toolkit connection YAML.
 - **SSE Keep-Alive:** Ensure your container reverse proxy (Nginx or Cloudflare) does not buffer Server-Sent Events with `proxy_buffering off;`.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#RemoteMCP` `#IBMCloudCodeEngine` `#Server-SentEvents` `#SSE` `#Gateway422` `#Microservices`
 
 ---
 

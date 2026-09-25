@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#SingleSign-On` `#SSO` `#MicrosoftEntraID` `#AzureAD` `#SAML2.0` `#IdentityFederation`
 
 ---
 
@@ -112,6 +113,12 @@ orchestrate chat ask -n sso_directory_agent "Verify my corporate login status"
 - **Attribute Mapping in Entra ID:** Ensure `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` is mapped to `user.mail` in the Azure Portal Enterprise Applications panel.
 - **Reply URL (ACS):** Double-check your Watsonx Orchestrate ACS URL matches the regional deployment URL.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#SingleSign-On` `#SSO` `#MicrosoftEntraID` `#AzureAD` `#SAML2.0` `#IdentityFederation`
 
 ---
 

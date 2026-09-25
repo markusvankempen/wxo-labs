@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#ContextInjection` `#UserIdentity` `#AgentRun` `#StateManagement` `#AIPersonalization`
 
 ---
 
@@ -115,6 +116,12 @@ orchestrate chat ask -n hr_context_assistant "What are my current employee benef
 - **The AgentRun Import Workaround:** The cloud runner environment does not export the full `run.context` python module during static inspection. Always use the `try/except: AgentRun = object` fallback pattern to prevent `ModuleNotFoundError` during tool import.
 - **Enabling Context Access:** You must set `@tool(context_access_enabled=True)`. Without this flag, Orchestrate will not inject the `agent_run` parameter into your function.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#ContextInjection` `#UserIdentity` `#AgentRun` `#StateManagement` `#AIPersonalization`
 
 ---
 

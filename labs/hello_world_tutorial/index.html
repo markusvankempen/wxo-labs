@@ -3,13 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes</title>
-  
+  <title>Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes | WXO Labs Series (Part 1)</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Build, deploy, and chat with your first custom Python tool and native AI agent in IBM watsonx Orchestrate in 15 minutes. Step-by-step hands-on developer guide.">
+  <meta name="keywords" content="watsonx Orchestrate, AI Agents, Python, Granite 3, CLI, Beginner Tutorial, Enterprise AI">
+  <meta name="author" content="Markus van Kempen">
+  <link rel="canonical" href="https://markusvankempen.github.io/wxo-labs/blog/getting-started-watsonx-orchestrate/">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://markusvankempen.github.io/wxo-labs/blog/getting-started-watsonx-orchestrate/">
+  <meta property="og:title" content="Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes">
+  <meta property="og:description" content="Build, deploy, and chat with your first custom Python tool and native AI agent in IBM watsonx Orchestrate in 15 minutes. Step-by-step hands-on developer guide.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+  <meta property="og:site_name" content="WXO Labs: Hands-On Watsonx Orchestrate Guide">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://markusvankempen.github.io/wxo-labs/blog/getting-started-watsonx-orchestrate/">
+  <meta name="twitter:title" content="Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes">
+  <meta name="twitter:description" content="Build, deploy, and chat with your first custom Python tool and native AI agent in IBM watsonx Orchestrate in 15 minutes. Step-by-step hands-on developer guide.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes",
+  "description": "Build, deploy, and chat with your first custom Python tool and native AI agent in IBM watsonx Orchestrate in 15 minutes. Step-by-step hands-on developer guide.",
+  "image": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "Markus van Kempen",
+    "url": "https://markusvankempen.github.io/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "IBM watsonx Orchestrate Labs",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg"
+    }
+  },
+  "url": "https://markusvankempen.github.io/wxo-labs/blog/getting-started-watsonx-orchestrate/",
+  "keywords": "watsonx Orchestrate, AI Agents, Python, Granite 3, CLI, Beginner Tutorial, Enterprise AI"
+}
+  </script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --bg-primary: #0a0e17;
@@ -17,577 +63,86 @@
       --bg-card: rgba(17, 24, 39, 0.7);
       --bg-code: #0d131f;
       --border: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(15, 98, 254, 0.4);
       --text-primary: #f3f4f6;
       --text-secondary: #9ca3af;
-      --text-muted: #6b7280;
       --ibm-blue: #0f62fe;
       --ibm-cyan: #00d3ff;
       --accent-purple: #8a3ffc;
-      --accent-green: #24a148;
       --gradient-brand: linear-gradient(135deg, #0f62fe 0%, #00d3ff 50%, #8a3ffc 100%);
       --radius-sm: 8px;
       --radius-md: 14px;
-      --radius-lg: 20px;
       --shadow-glow: 0 0 35px rgba(15, 98, 254, 0.25);
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
     }
-
-    /* Top Progress Bar */
-    #progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: var(--gradient-brand);
-      width: 0%;
-      z-index: 1000;
-      transition: width 0.1s ease;
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-brand); z-index: 1000; width: 0%; }
+    .navbar {
+      position: sticky; top: 0; background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100;
     }
-
-    /* Header Nav */
-    .header-nav {
-      position: sticky;
-      top: 0;
-      backdrop-filter: blur(16px);
-      background: rgba(10, 14, 23, 0.85);
-      border-bottom: 1px solid var(--border);
-      z-index: 900;
-      padding: 14px 24px;
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;
+      font-weight: 600; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s ease; cursor: pointer;
     }
-
-    .header-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .brand-icon-img {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(15, 98, 254, 0.4);
-    }
-
-    .brand-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .badge-series {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      background: rgba(15, 98, 254, 0.2);
-      border: 1px solid var(--ibm-blue);
-      color: var(--ibm-cyan);
-      border-radius: 20px;
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .btn-nav:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--text-secondary);
-      transform: translateY(-1px);
-    }
-
-    .btn-nav-primary {
-      background: var(--ibm-blue);
-      border-color: var(--ibm-blue);
-      color: #fff;
-    }
-
-    .btn-nav-primary:hover {
-      background: #0353e9;
-      box-shadow: 0 0 15px rgba(15, 98, 254, 0.5);
-    }
-
-    /* Main Container */
-    .article-container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-    }
-
-    /* Hero Banner */
-    .hero-banner-wrapper {
-      margin-bottom: 36px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-glow);
-      position: relative;
-    }
-
-    .hero-banner-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-    }
-
-    /* Article Meta */
-    .article-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-    }
-
-    .meta-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-
-    /* Main Title */
-    .article-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 2.6rem;
-      font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-      background: linear-gradient(180deg, #ffffff 0%, #d1d5db 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Author Card */
-    .author-card {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      margin-bottom: 40px;
-      backdrop-filter: blur(10px);
-    }
-
-    .author-avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--ibm-blue), var(--accent-purple));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #fff;
-      box-shadow: 0 0 15px rgba(15, 98, 254, 0.3);
-    }
-
-    .author-info h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-
-    .author-info p {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .author-links {
-      margin-left: auto;
-      display: flex;
-      gap: 10px;
-    }
-
-    /* Content Typography */
-    .content h2 {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-top: 48px;
-      margin-bottom: 18px;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      letter-spacing: -0.01em;
-    }
-
-    .content h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 32px;
-      margin-bottom: 14px;
-      color: #e5e7eb;
-    }
-
-    .content p {
-      margin-bottom: 20px;
-      color: #d1d5db;
-      font-size: 1.05rem;
-    }
-
-    .content ul, .content ol {
-      margin-bottom: 24px;
-      padding-left: 28px;
-      color: #d1d5db;
-    }
-
-    .content li {
-      margin-bottom: 8px;
-    }
-
-    .content strong {
-      color: #fff;
-    }
-
-    .content a {
-      color: var(--ibm-cyan);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0, 211, 255, 0.3);
-      transition: all 0.2s;
-    }
-
-    .content a:hover {
-      color: #fff;
-      border-color: #fff;
-    }
-
-    /* Code Blocks */
-    .code-container {
-      position: relative;
-      margin: 24px 0 28px;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: var(--bg-code);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .code-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border-bottom: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .copy-btn {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .copy-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-    }
-
-    pre {
-      padding: 18px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.92rem;
-      line-height: 1.6;
-      color: #e2e8f0;
-    }
-
-    code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    p code, li code {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-size: 0.88em;
-      color: var(--ibm-cyan);
-    }
-
-    /* Callout Boxes */
-    .callout {
-      padding: 20px 24px;
-      border-radius: var(--radius-md);
-      margin: 28px 0;
-      background: rgba(17, 24, 39, 0.6);
-      border-left: 4px solid var(--ibm-blue);
-      border-top: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .callout-title {
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .callout-challenge {
-      border-left-color: var(--accent-purple);
-      background: rgba(138, 63, 252, 0.05);
-    }
-
-    .callout-challenge .callout-title {
-      color: #c9a7ff;
-    }
-
-    /* Terminal Output Box */
-    .terminal-box {
-      background: #000;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
-      margin: 20px 0 28px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      color: #38bdf8;
-      line-height: 1.5;
-    }
-
-    .terminal-output {
-      color: #a7f3d0;
-    }
-
-    /* Next Steps Cards */
-    .roadmap-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin: 28px 0;
-    }
-
-    .roadmap-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      transition: all 0.2s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .roadmap-card:hover {
-      border-color: var(--ibm-cyan);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    .roadmap-tier {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      color: var(--ibm-cyan);
-    }
-
-    .roadmap-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .roadmap-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 24px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      background: var(--bg-primary);
-    }
-
-    footer a {
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      .article-title {
-        font-size: 2rem;
-      }
-      .author-links {
-        display: none;
-      }
-    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0353e9; transform: translateY(-1px); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 0.75rem; }
+    .tags-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem; }
+    .tag-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(255, 255, 255, 0.05); color: var(--ibm-cyan); border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
+    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .hero-banner { width: 100%; border-radius: var(--radius-md); margin: 2rem 0; box-shadow: var(--shadow-glow); border: 1px solid var(--border); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
+    pre { background: var(--bg-code); padding: 1.25rem; border-radius: var(--radius-sm); overflow-x: auto; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; margin: 1rem 0; }
+    code { font-family: 'JetBrains Mono', monospace; color: var(--ibm-cyan); }
+    hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   </style>
 </head>
 <body>
-
-  <div id="progress-bar"></div>
-
-  <!-- Header -->
-  <header class="header-nav">
-    <div class="header-container">
-      <a href="https://markusvankempen.github.io/wxo-labs/" class="brand-group" target="_blank">
-        <img src="wxo_labs_icon.jpg" alt="WXO Labs Icon" class="brand-icon-img">
-        <div class="brand-title">
-          WXO Labs
-          <span class="badge-series">Part 1 of 15</span>
-        </div>
-      </a>
-      <div class="nav-actions">
-        <a href="https://github.com/markusvankempen/wxo-labs" target="_blank" class="btn-nav">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          Star on GitHub
-        </a>
-        <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank" class="btn-nav btn-nav-primary">
-          Explore All 15 Labs ➔
-        </a>
-      </div>
+  <div class="progress-bar" id="progressBar"></div>
+  <nav class="navbar">
+    <a href="../index.html" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
+      <span>WXO Labs Series</span>
+    </a>
+    <div class="nav-actions">
+      <a href="../index.html" class="btn btn-ghost">&larr; All 15 Articles</a>
+      <a href="ibm_community_post.html" target="_blank" class="btn btn-primary">📋 Copy Community HTML</a>
     </div>
-  </header>
+  </nav>
 
-  <!-- Main Article -->
-  <main class="article-container">
+  <div class="container">
+    <span class="badge">Part 1 of 15 &bull; 🟢 Easy (Beginner) &bull; ⏱️ 30 minutes</span>
+    <h1>Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes</h1>
+    <p style="color: var(--text-secondary); font-size: 1.1rem;">Step-by-step hands-on tutorial on writing Python tools with @tool, configuring Granite 3 agents in YAML, and testing live via CLI.</p>
     
-    <!-- Hero Banner -->
-    <div class="hero-banner-wrapper">
-      <img src="wxo_blog_banner.jpg" alt="Building Custom Tools in watsonx Orchestrate" class="hero-banner-img">
+    <div class="tags-container">
+      <span class="tag-badge">#watsonxOrchestrate</span><span class="tag-badge">#AIAgents</span><span class="tag-badge">#Python</span><span class="tag-badge">#Granite3</span><span class="tag-badge">#CLI</span><span class="tag-badge">#BeginnerTutorial</span><span class="tag-badge">#EnterpriseAI</span>
     </div>
 
-    <!-- Article Metadata -->
-    <div class="article-meta">
-      <span class="meta-tag">🚀 watsonx Orchestrate</span>
-      <span class="meta-tag">⏱️ 15 min read</span>
-      <span class="meta-tag">🟢 Beginner Level</span>
-      <span class="meta-tag">🐍 Python & CLI</span>
+    <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes" class="hero-banner">
+
+    <div class="card">
+      <h3 style="margin-bottom:0.75rem; color:var(--ibm-cyan);">Why This Pattern Matters</h3>
+      <p>Large Language Models (LLMs) are great at conversational synthesis, but on their own, they cannot query your company database, call an internal microservice, or run deterministic business calculations. In IBM watsonx Orchestrate (WXO), tools give your AI agents hands and feet. You can write custom logic in plain Python, decorate it with @tool, and publish it directly to your Orchestrate catalog.</p>
     </div>
 
-    <h1 class="article-title">Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes</h1>
+    <hr>
 
-    <!-- Author Card -->
-    <div class="author-card">
-      <div class="author-avatar">MK</div>
-      <div class="author-info">
-        <h4>Markus van Kempen</h4>
-        <p>Research & Engineering | <a href="https://markusvankempen.github.io/" target="_blank">Floor 7½ 🏢🤏</a></p>
-      </div>
-      <div class="author-links">
-        <a href="https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067" target="_blank" class="btn-nav">IBM Community</a>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <h2>Why Custom Tools Matter</h2>
-      <p>
-        Large Language Models (LLMs) are great at conversational synthesis, but without tools, they operate in isolation. They cannot query your corporate database, call an internal microservice, or run deterministic calculations.
-      </p>
-      <p>
-        In <strong>IBM watsonx Orchestrate (WXO)</strong>, tools give your AI agents hands and feet. You can write custom logic in plain Python, decorate it with <code>@tool</code>, and publish it directly to your catalog. From there, the agent autonomously extracts parameters from conversational user requests and runs your code.
-      </p>
-      <p>
-        In this hands-on tutorial (adapted from <strong>Lab 1</strong> of our <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">WXO Labs & Tutorial Guide</a>), we will write a custom Python greeting tool, import it into WXO, deploy a native AI agent, and interact with it in under 15 minutes.
-      </p>
-
-      <h2>📋 Prerequisites</h2>
-      <p>Before starting, make sure you have Python 3.10+ and the official Orchestrate CLI installed:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>Terminal</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code># 1. Install the CLI
-pip install ibm-watsonx-orchestrate
-
-# 2. Verify active environment
-orchestrate env list</code></pre>
-      </div>
-
-      <h2>🛠️ Step 1: Write Your Python Tool (<code>greetings.py</code>)</h2>
-      <p>Create a dedicated workspace folder and create <code>greetings.py</code>:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>greetings.py</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code>from ibm_watsonx_orchestrate import tool
+    <h2>Step 1: Write Tool Logic (<code>greetings.py</code>)</h2>
+    <pre><code>from ibm_watsonx_orchestrate import tool
 
 @tool
-def greet_user(name: str) -> str:
+def greet_user(name: str) -&gt; str:
     """
     Generate a personalized greeting for a user.
 
@@ -598,50 +153,12 @@ def greet_user(name: str) -> str:
         A friendly greeting message.
     """
     return f"Hello, {name}! Welcome to IBM watsonx Orchestrate."</code></pre>
-      </div>
 
-      <div class="callout">
-        <div class="callout-title">💡 How Watsonx Orchestrate Reads Your Code</div>
-        <p>
-          Notice how clean this is. The <strong><code>@tool</code></strong> decorator inspects your Python type hints (<code>name: str</code>) to dynamically generate the JSON Schema. Furthermore, the LLM reads the docstring to understand <em>when</em> to call the tool and <em>which arguments</em> to parse from the user prompt.
-        </p>
-      </div>
+    <h2>Step 2: Dependencies (<code>requirements.txt</code>)</h2>
+    <pre><code>ibm-watsonx-orchestrate>=2.9.0</code></pre>
 
-      <h2>📦 Step 2: Create <code>requirements.txt</code></h2>
-      <p>Tell the Orchestrate runtime what dependencies your tool requires:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>requirements.txt</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code>ibm-watsonx-orchestrate>=2.9.0</code></pre>
-      </div>
-
-      <h2>🚀 Step 3: Import the Tool into WXO Catalog</h2>
-      <p>Use the CLI to bundle and upload your Python tool:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>Terminal</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code># Import your Python tool
-orchestrate tools import -k python -f greetings.py -r requirements.txt
-
-# Verify it appears in your catalog
-orchestrate tools list | grep greet_user</code></pre>
-      </div>
-
-      <h2>🤖 Step 4: Define Your AI Agent (<code>agent.yaml</code>)</h2>
-      <p>Create an agent manifest that binds to your newly imported tool:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>agent.yaml</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code>spec_version: v1
+    <h2>Step 3: Agent Manifest (<code>agent.yaml</code>)</h2>
+    <pre><code>spec_version: v1
 kind: native
 name: hello_world_greeter
 title: "Hello World Greeter"
@@ -653,133 +170,42 @@ instructions: |
   and call the `greet_user` tool to deliver a personalized welcome.
 tools:
   - greet_user</code></pre>
-      </div>
 
-      <h2>🚢 Step 5: Deploy & Test Your Agent</h2>
-      <p>Import and deploy your agent with two simple commands:</p>
+    <h2>Step 4: Live Execution</h2>
+    <pre><code>orchestrate chat ask -n hello_world_greeter "Say hello to Markus"</code></pre>
+    <pre><code>╭─ 🤖 hello_world_greeter ───────────────────────────────────────────────╮
+│                                                                        │
+│  Hello, Markus! Welcome to IBM watsonx Orchestrate.                    │
+│                                                                        │
+╰────────────────────────────────────────────────────────────────────────╯</code></pre>
 
-      <div class="code-container">
-        <div class="code-header">
-          <span>Terminal</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code># Import the agent
-orchestrate agents import -f agent.yaml
+    <hr>
 
-# Deploy to draft environment
-orchestrate agents deploy -n hello_world_greeter</code></pre>
-      </div>
+    <h2>💡 Pro Tips &amp; Architecture Insights</h2>
+    <div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 The @tool decorator</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Automatically registers the function signature and docstrings into the tool JSON Schema.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 Type annotations</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Parameter types like name: str are required by Orchestrate to generate the API contract for the LLM.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 ModuleNotFoundError</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Always include -r requirements.txt when importing tools via CLI.</p>
+</div>
 
-      <p>Now, test your agent conversationally in your terminal:</p>
-
-      <div class="code-container">
-        <div class="code-header">
-          <span>Terminal</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><code>orchestrate chat ask -n hello_world_greeter "Say hello to Markus"</code></pre>
-      </div>
-
-      <div class="terminal-box">
-        <div>[INFO] - Using agent: hello_world_greeter</div>
-        <div>👤 User: Say hello to Markus</div>
-        <br>
-        <div class="terminal-output">
-          ╭─ 🤖 hello_world_greeter ───────────────────────────────────────────────╮<br>
-          │                                                                        │<br>
-          │  Hello, Markus! Welcome to IBM watsonx Orchestrate.                    │<br>
-          │                                                                        │<br>
-          ╰────────────────────────────────────────────────────────────────────────╯
-        </div>
-      </div>
-
-      <div class="callout callout-challenge">
-        <div class="callout-title">🎯 Challenge Exercise: Add Multi-Language Greetings!</div>
-        <p>Try modifying <code>greetings.py</code> to support a language parameter:</p>
-        <pre><code>@tool
-def greet_user(name: str, language: str = "en") -> str:
-    """Personalized greeting in English, Spanish, French, or German."""
-    greetings = {
-        "en": f"Hello, {name}! Welcome to IBM watsonx Orchestrate.",
-        "es": f"¡Hola, {name}! Bienvenido a IBM watsonx Orchestrate.",
-        "fr": f"Bonjour, {name}! Bienvenue dans IBM watsonx Orchestrate.",
-        "de": f"Guten Tag, {name}! Willkommen bei IBM watsonx Orchestrate."
-    }
-    return greetings.get(language.lower(), greetings["en"])</code></pre>
-        <p style="margin-top: 10px;">
-          Re-import with <code>orchestrate tools import -k python -f greetings.py -r requirements.txt</code> and ask:
-          <em>"Say hello to Carlos in Spanish"</em>!
-        </p>
-      </div>
-
-      <h2>🗺️ What’s Next in the Series?</h2>
-      <p>
-        Congratulations! You have completed <strong>Lab 1</strong>. This is just the starting point of our 15-lab comprehensive curriculum designed to take you from beginner to enterprise architect:
-      </p>
-
-      <div class="roadmap-grid">
-        <a href="https://markusvankempen.github.io/wxo-labs/#easy" target="_blank" class="roadmap-card">
-          <div class="roadmap-tier">🟢 Foundation (Labs 1–3)</div>
-          <div class="roadmap-title">Tools & File Uploads</div>
-          <div class="roadmap-desc">Pydantic input validation, UI defaults, and document parsing pipelines.</div>
-        </a>
-        <a href="https://markusvankempen.github.io/wxo-labs/#intermediate" target="_blank" class="roadmap-card">
-          <div class="roadmap-tier">🟡 Intermediate (Labs 4–8)</div>
-          <div class="roadmap-title">Context & Async Jobs</div>
-          <div class="roadmap-desc">Inject ambient user credentials ({wxo_user_name}), file streaming, and local MCP servers.</div>
-        </a>
-        <a href="https://markusvankempen.github.io/wxo-labs/#advanced" target="_blank" class="roadmap-card">
-          <div class="roadmap-tier">🔴 Advanced (Labs 9–11, 15)</div>
-          <div class="roadmap-title">Security & Remote MCP</div>
-          <div class="roadmap-desc">RBAC plugins, Microsoft Entra ID (SSO), and containerized Remote MCP toolkits.</div>
-        </a>
-        <a href="https://markusvankempen.github.io/wxo-labs/#expert" target="_blank" class="roadmap-card">
-          <div class="roadmap-tier">🏆 Expert (Labs 12–14)</div>
-          <div class="roadmap-title">Observability & RAG</div>
-          <div class="roadmap-desc">Audit vaults, live latency telemetry dashboards, and RAG evaluation pipelines.</div>
-        </a>
-      </div>
-
-      <p style="text-align: center; margin-top: 36px;">
-        <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank" class="btn-nav btn-nav-primary" style="padding: 12px 24px; font-size: 1rem;">
-          🎓 Visit the Interactive WXO Labs Portal
-        </a>
-      </p>
-
+    <hr>
+    <div style="text-align:center; padding:2rem 0;">
+      <a href="ibm_community_post.html" class="btn btn-primary" style="padding:0.75rem 1.75rem; font-size:1rem;">📋 Open IBM Community Ready HTML</a>
     </div>
-  </main>
-
-  <footer>
-    <div style="margin-bottom: 12px;">
-      <a href="https://markusvankempen.github.io/wxo-labs/" target="_blank">WXO Labs Portal</a> • 
-      <a href="https://github.com/markusvankempen/wxo-labs" target="_blank">GitHub Repository</a> • 
-      <a href="https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067" target="_blank">IBM Community</a>
-    </div>
-    <p>© 2026 Markus van Kempen | Built for the IBM watsonx Orchestrate Developer Community</p>
-  </footer>
+  </div>
 
   <script>
-    // Reading Progress Indicator
     window.addEventListener('scroll', () => {
-      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const winScroll = document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
-      document.getElementById('progress-bar').style.width = scrolled + '%';
+      document.getElementById('progressBar').style.width = scrolled + '%';
     });
-
-    // Copy to Clipboard
-    function copyCode(button) {
-      const container = button.closest('.code-container');
-      const code = container.querySelector('code').innerText;
-      navigator.clipboard.writeText(code).then(() => {
-        button.innerText = 'Copied!';
-        button.style.color = '#38bdf8';
-        setTimeout(() => {
-          button.innerText = 'Copy';
-          button.style.color = '';
-        }, 2000);
-      });
-    }
   </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#Observability` `#Telemetry` `#TokenTracking` `#Grafana` `#PerformanceMonitoring` `#DevOps`
 
 ---
 
@@ -105,6 +106,12 @@ Agent: async_job_manager         | Invocations:     1 | Avg Latency: 1450.0ms | 
 - **Prometheus / OpenTelemetry Export:** Expose telemetry on a `/metrics` endpoint in OpenTelemetry format to integrate with Grafana, Instana, and Datadog.
 - **Token Quotas:** Set threshold alerts when token velocity exceeds standard developer budgets.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#Observability` `#Telemetry` `#TokenTracking` `#Grafana` `#PerformanceMonitoring` `#DevOps`
 
 ---
 

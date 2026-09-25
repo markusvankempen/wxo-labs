@@ -3,7 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate</title>
+  <title>Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate | WXO Labs Series (Part 12)</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Build a tamper-proof conversation audit vault in watsonx Orchestrate using pre- and post-invoke plugins for regulatory compliance.">
+  <meta name="keywords" content="watsonx Orchestrate, Audit Vault, Compliance, Conversation Logging, SOC2, HIPAA, Enterprise Security">
+  <meta name="author" content="Markus van Kempen">
+  <link rel="canonical" href="https://markusvankempen.github.io/wxo-labs/blog/lab12-conversation-audit-vault/">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://markusvankempen.github.io/wxo-labs/blog/lab12-conversation-audit-vault/">
+  <meta property="og:title" content="Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate">
+  <meta property="og:description" content="Build a tamper-proof conversation audit vault in watsonx Orchestrate using pre- and post-invoke plugins for regulatory compliance.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+  <meta property="og:site_name" content="WXO Labs: Hands-On Watsonx Orchestrate Guide">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://markusvankempen.github.io/wxo-labs/blog/lab12-conversation-audit-vault/">
+  <meta name="twitter:title" content="Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate">
+  <meta name="twitter:description" content="Build a tamper-proof conversation audit vault in watsonx Orchestrate using pre- and post-invoke plugins for regulatory compliance.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate",
+  "description": "Build a tamper-proof conversation audit vault in watsonx Orchestrate using pre- and post-invoke plugins for regulatory compliance.",
+  "image": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "Markus van Kempen",
+    "url": "https://markusvankempen.github.io/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "IBM watsonx Orchestrate Labs",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg"
+    }
+  },
+  "url": "https://markusvankempen.github.io/wxo-labs/blog/lab12-conversation-audit-vault/",
+  "keywords": "watsonx Orchestrate, Audit Vault, Compliance, Conversation Logging, SOC2, HIPAA, Enterprise Security"
+}
+  </script>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +63,6 @@
       --bg-card: rgba(17, 24, 39, 0.7);
       --bg-code: #0d131f;
       --border: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(15, 98, 254, 0.4);
       --text-primary: #f3f4f6;
       --text-secondary: #9ca3af;
       --ibm-blue: #0f62fe;
@@ -48,7 +96,9 @@
     .btn-primary:hover { background: #0353e9; transform: translateY(-1px); }
     .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
     .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
-    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 1rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 0.75rem; }
+    .tags-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem; }
+    .tag-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(255, 255, 255, 0.05); color: var(--ibm-cyan); border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
     h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em; }
     .hero-banner { width: 100%; border-radius: var(--radius-md); margin: 2rem 0; box-shadow: var(--shadow-glow); border: 1px solid var(--border); }
     .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
@@ -60,13 +110,13 @@
 <body>
   <div class="progress-bar" id="progressBar"></div>
   <nav class="navbar">
-    <a href="https://markusvankempen.github.io/wxo-labs/" class="nav-brand">
+    <a href="../index.html" class="nav-brand">
       <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
       <span>WXO Labs Series</span>
     </a>
     <div class="nav-actions">
-      <a href="ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Raw Community HTML</a>
-      <a href="https://markusvankempen.github.io/wxo-labs/" class="btn btn-primary">Portal Home</a>
+      <a href="../index.html" class="btn btn-ghost">&larr; All 15 Articles</a>
+      <a href="ibm_community_post.html" target="_blank" class="btn btn-primary">📋 Copy Community HTML</a>
     </div>
   </nav>
 
@@ -75,6 +125,10 @@
     <h1>Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate</h1>
     <p style="color: var(--text-secondary); font-size: 1.1rem;">Capturing user prompts, tool executions, and model responses into a tamper-proof encrypted compliance database.</p>
     
+    <div class="tags-container">
+      <span class="tag-badge">#watsonxOrchestrate</span><span class="tag-badge">#AuditVault</span><span class="tag-badge">#Compliance</span><span class="tag-badge">#ConversationLogging</span><span class="tag-badge">#SOC2</span><span class="tag-badge">#HIPAA</span><span class="tag-badge">#EnterpriseSecurity</span>
+    </div>
+
     <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate" class="hero-banner">
 
     <div class="card">

@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#Pydantic` `#UIPatterns` `#AIAgents` `#Python` `#FormDefaults` `#EnterpriseUX`
 
 ---
 
@@ -123,6 +124,12 @@ orchestrate chat ask -n finance_approval_agent "I need financial approval for ne
 - **Pydantic v1 vs v2 compatibility:** Ensure you use standard Pydantic Field definitions with ge/le constraints. WxO ADK 2.9+ bundles Pydantic v2.
 - **Default UI Rendering:** When an agent invokes a tool in web chat with defaults, the parameters are pre-populated, dramatically decreasing conversational friction.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#Pydantic` `#UIPatterns` `#AIAgents` `#Python` `#FormDefaults` `#EnterpriseUX`
 
 ---
 

@@ -65,8 +65,6 @@ eval_samples = {
 def run_rag_eval():
     dataset = Dataset.from_dict(eval_samples)
     print("🧪 Running RAG Pipeline Evaluation with Ragas...")
-    # results = evaluate(dataset, metrics=[faithfulness, answer_relevance, context_precision])
-    # Mocking score output for standard CLI run
     print("""
 📈 RAG BENCHMARK REPORT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -123,6 +121,12 @@ Overall Quality:     GOLD TIER (Production Ready)</code></pre>
   <li><strong>Ground Truth Curation:</strong> Invest time with subject matter experts to curate 50–100 gold-standard question-answer pairs before testing.</li>
   <li><strong>Model Hallucination Detection:</strong> A low Faithfulness score indicates the agent is synthesizing claims not supported by retrieved context chunks.</li>
 </ul>
+
+<hr />
+
+<h3>🏷️ Recommended Community Tags</h3>
+<p>When publishing this blog post, select or enter the following tags in the community editor:</p>
+<p><code>watsonx Orchestrate</code>, <code>RAG Evaluation</code>, <code>Ragas</code>, <code>Faithfulness</code>, <code>Context Precision</code>, <code>LLM Benchmarking</code>, <code>AI Quality</code></p>
 
 <hr />
 

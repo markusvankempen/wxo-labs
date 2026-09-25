@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#AuditVault` `#Compliance` `#ConversationLogging` `#SOC2` `#HIPAA` `#EnterpriseSecurity`
 
 ---
 
@@ -117,6 +118,12 @@ sqlite3 /tmp/wxo_audit_vault.db "SELECT timestamp, user_email, event_type FROM a
 - **PII Redaction:** Before writing to audit tables, apply regex masking on Social Security numbers, credit card tokens, and passwords.
 - **Non-blocking network calls:** If forwarding audit logs to Splunk or Datadog over HTTP, use asynchronous non-blocking dispatch to avoid slowing down user chat.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#AuditVault` `#Compliance` `#ConversationLogging` `#SOC2` `#HIPAA` `#EnterpriseSecurity`
 
 ---
 

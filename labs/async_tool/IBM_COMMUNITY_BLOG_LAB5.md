@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#AsyncExecution` `#BackgroundJobs` `#Non-Blocking` `#WorkerThreads` `#PollingPattern`
 
 ---
 
@@ -131,6 +132,12 @@ orchestrate chat ask -n async_job_manager "Start data aggregation for Q3 Sales"
 - **State Persistence in Containers:** In multi-pod Kubernetes or serverless cloud environments, worker memory is isolated. In production, back your JOBS store with Redis or Cloudant.
 - **Gateway Timeout Prevention:** Always return within 2 seconds of invoking `start_background_job` to maintain responsiveness.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#AsyncExecution` `#BackgroundJobs` `#Non-Blocking` `#WorkerThreads` `#PollingPattern`
 
 ---
 

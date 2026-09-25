@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#MCPSecurity` `#BearerTokens` `#JWT` `#OAuth` `#EnterpriseSecurity` `#Starlette`
 
 ---
 
@@ -43,7 +44,6 @@ async def check_identity(request):
     
     token = auth_header.split(" ")[1]
     try:
-        # In production: verify RSA signature using JWKS endpoint
         payload_segment = token.split(".")[1]
         decoded = base64.b64decode(payload_segment + "==").decode("utf-8")
         claims = json.loads(decoded)
@@ -114,6 +114,12 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/check-identity
 - **Token Leakage Prevention:** Never pass raw tokens as prompt arguments to the LLM. Always inject them at the transport layer (`Authorization: Bearer`) using WXO Connection settings.
 - **JWT Expiry:** Ensure downstream services handle token refresh or expect fresh tokens on every agent dialogue turn.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#MCPSecurity` `#BearerTokens` `#JWT` `#OAuth` `#EnterpriseSecurity` `#Starlette`
 
 ---
 

@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#RAGEvaluation` `#Ragas` `#Faithfulness` `#ContextPrecision` `#LLMBenchmarking` `#AIQuality`
 
 ---
 
@@ -56,8 +57,6 @@ eval_samples = {
 def run_rag_eval():
     dataset = Dataset.from_dict(eval_samples)
     print("🧪 Running RAG Pipeline Evaluation with Ragas...")
-    # results = evaluate(dataset, metrics=[faithfulness, answer_relevance, context_precision])
-    # Mocking score output for standard CLI run
     print("""
 📈 RAG BENCHMARK REPORT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -122,6 +121,12 @@ Overall Quality:     GOLD TIER (Production Ready)
 - **Ground Truth Curation:** Invest time with subject matter experts to curate 50–100 gold-standard question-answer pairs before testing.
 - **Model Hallucination Detection:** A low Faithfulness score indicates the agent is synthesizing claims not supported by retrieved context chunks.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#RAGEvaluation` `#Ragas` `#Faithfulness` `#ContextPrecision` `#LLMBenchmarking` `#AIQuality`
 
 ---
 

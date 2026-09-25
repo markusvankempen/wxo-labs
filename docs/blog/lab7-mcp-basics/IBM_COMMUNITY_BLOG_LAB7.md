@@ -6,6 +6,7 @@
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
 - **Interactive Lab Portal:** [markusvankempen.github.io/wxo-labs/](https://markusvankempen.github.io/wxo-labs/)  
 - **GitHub Repository:** [github.com/markusvankempen/wxo-labs](https://github.com/markusvankempen/wxo-labs)  
+- **Tags:** `#watsonxOrchestrate` `#ModelContextProtocol` `#MCP` `#Sidecars` `#JSON-RPC` `#STDIOTransport` `#AITools`
 
 ---
 
@@ -112,6 +113,12 @@ orchestrate toolkits add --kind mcp --package-root ./mcp_discovery_test
 - **The '0 tools found' Bug:** When importing MCP toolkits via CLI, you must provide `--package-root .` so Orchestrate can locate dependencies and the execution wrapper.
 - **STDIO vs SSE Transport:** Use STDIO transport for rapid local workstation testing, and switch to SSE (Server-Sent Events) or Streamable HTTP for production container microservices.
 
+
+---
+
+## 🏷️ Article Tags
+
+`#watsonxOrchestrate` `#ModelContextProtocol` `#MCP` `#Sidecars` `#JSON-RPC` `#STDIOTransport` `#AITools`
 
 ---
 

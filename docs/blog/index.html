@@ -3,7 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WXO Labs Blog Series: 15-Part Hands-On Developer Journey</title>
+  <title>WXO Labs Blog Series: 15-Part Hands-On Developer Journey | watsonx Orchestrate</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Explore all 15 parts of the WXO Labs hands-on developer tutorial series. Master IBM watsonx Orchestrate, Python custom tools, Model Context Protocol (MCP), and enterprise AI agents.">
+  <meta name="keywords" content="watsonx Orchestrate, IBM watsonx, AI Agents, Model Context Protocol, MCP, Python, Granite 3, RAG Evaluation, Enterprise AI, LLM, Developer Tutorial">
+  <meta name="author" content="Markus van Kempen">
+  <link rel="canonical" href="https://markusvankempen.github.io/wxo-labs/blog/">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://markusvankempen.github.io/wxo-labs/blog/">
+  <meta property="og:title" content="WXO Labs Blog Series: 15 Hands-On watsonx Orchestrate Developer Tutorials">
+  <meta property="og:description" content="From Hello World to enterprise MCP sidecars, SSO, and RAG evaluation. 15 step-by-step hands-on guides with working code.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+  <meta property="og:site_name" content="WXO Labs">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WXO Labs Blog Series: 15 Hands-On Developer Tutorials">
+  <meta name="twitter:description" content="15 progressive hands-on developer tutorials for IBM watsonx Orchestrate AI agents, MCP, and custom tools.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "WXO Labs Developer Blog Series: 15 Hands-On watsonx Orchestrate Tutorials",
+  "description": "Comprehensive 15-part tutorial series for mastering IBM watsonx Orchestrate, Python tools, Model Context Protocol (MCP), and enterprise AI agents.",
+  "url": "https://markusvankempen.github.io/wxo-labs/blog/",
+  "author": {
+    "@type": "Person",
+    "name": "Markus van Kempen"
+  }
+}
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -72,7 +108,7 @@
     .blog-card h3 { font-size: 1.15rem; line-height: 1.4; margin-bottom: 0.5rem; }
     .blog-card h3 a { color: #fff; text-decoration: none; }
     .blog-card h3 a:hover { color: var(--ibm-cyan); }
-    .difficulty { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; }
+    .difficulty { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
     .card-actions { display: flex; gap: 0.5rem; margin-top: auto; }
   </style>
 </head>
@@ -102,9 +138,10 @@
           </div>
           <h3><a href="getting-started-watsonx-orchestrate/index.html">Getting Started with watsonx Orchestrate: Build Your First Custom Python Tool & AI Agent in 15 Minutes</a></h3>
           <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AIAgents</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Python</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Granite3</span></div>
           <div class="card-actions">
             <a href="getting-started-watsonx-orchestrate/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="getting-started-watsonx-orchestrate/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="getting-started-watsonx-orchestrate/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -115,9 +152,10 @@
           </div>
           <h3><a href="lab2-input-defaults/index.html">Input Defaults & UI Patterns in watsonx Orchestrate: Supercharging UX with Smart Pydantic Schemas</a></h3>
           <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Pydantic</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#UIPatterns</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AIAgents</span></div>
           <div class="card-actions">
             <a href="lab2-input-defaults/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab2-input-defaults/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab2-input-defaults/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -128,9 +166,10 @@
           </div>
           <h3><a href="lab3-file-upload-processing/index.html">Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent</a></h3>
           <p class="difficulty">🟢 Easy (Beginner)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#FileUpload</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Pandas</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Excel</span></div>
           <div class="card-actions">
             <a href="lab3-file-upload-processing/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab3-file-upload-processing/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab3-file-upload-processing/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -141,9 +180,10 @@
           </div>
           <h3><a href="lab4-context-injection/index.html">Injecting Ambient User Context & Identity in watsonx Orchestrate: Personalizing AI Agents</a></h3>
           <p class="difficulty">🟡 Intermediate</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#ContextInjection</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#UserIdentity</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AgentRun</span></div>
           <div class="card-actions">
             <a href="lab4-context-injection/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab4-context-injection/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab4-context-injection/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -154,9 +194,10 @@
           </div>
           <h3><a href="lab5-async-tools-background-jobs/index.html">Non-Blocking Async Execution in watsonx Orchestrate: Building Background Job Workers for Heavy Tasks</a></h3>
           <p class="difficulty">🟡 Intermediate</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AsyncExecution</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#BackgroundJobs</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Non-Blocking</span></div>
           <div class="card-actions">
             <a href="lab5-async-tools-background-jobs/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab5-async-tools-background-jobs/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab5-async-tools-background-jobs/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -167,9 +208,10 @@
           </div>
           <h3><a href="lab6-file-downloads-streaming/index.html">Streaming Dynamic Files & PDF Generation in watsonx Orchestrate: Delivering On-Demand Reports</a></h3>
           <p class="difficulty">🟡 Intermediate</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#PDFGeneration</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#FileStreaming</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#ReportLab</span></div>
           <div class="card-actions">
             <a href="lab6-file-downloads-streaming/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab6-file-downloads-streaming/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab6-file-downloads-streaming/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -180,9 +222,10 @@
           </div>
           <h3><a href="lab7-mcp-basics/index.html">Getting Started with Model Context Protocol (MCP) in watsonx Orchestrate: Connecting Agents to External Sidecars</a></h3>
           <p class="difficulty">🟡 Intermediate</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#ModelContextProtocol</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#MCP</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Sidecars</span></div>
           <div class="card-actions">
             <a href="lab7-mcp-basics/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab7-mcp-basics/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab7-mcp-basics/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -193,9 +236,10 @@
           </div>
           <h3><a href="lab8-mcp-advanced-user-context/index.html">Enterprise Security with MCP & watsonx Orchestrate: Passing User Context and Bearer Tokens to Sidecars</a></h3>
           <p class="difficulty">🔴 Advanced</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#MCPSecurity</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#BearerTokens</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#JWT</span></div>
           <div class="card-actions">
             <a href="lab8-mcp-advanced-user-context/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab8-mcp-advanced-user-context/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab8-mcp-advanced-user-context/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -206,9 +250,10 @@
           </div>
           <h3><a href="lab9-rbac-plugin-security/index.html">Securing AI Agents with RBAC Pre-Invoke Plugins in watsonx Orchestrate: Multi-Role Authorization</a></h3>
           <p class="difficulty">🔴 Advanced</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#RBAC</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Pre-InvokePlugins</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AgentSecurity</span></div>
           <div class="card-actions">
             <a href="lab9-rbac-plugin-security/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab9-rbac-plugin-security/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab9-rbac-plugin-security/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -219,9 +264,10 @@
           </div>
           <h3><a href="lab10-sso-entra-id/index.html">Enterprise SSO & SAML Identity Propagation in watsonx Orchestrate: Connecting Microsoft Entra ID</a></h3>
           <p class="difficulty">🔴 Advanced</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#SingleSign-On</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#SSO</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#MicrosoftEntraID</span></div>
           <div class="card-actions">
             <a href="lab10-sso-entra-id/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab10-sso-entra-id/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab10-sso-entra-id/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -232,9 +278,10 @@
           </div>
           <h3><a href="lab11-agent-cicd-lifecycle/index.html">Automating Agent CI/CD Lifecycle: Exporting, Versioning, and Promoting watsonx Orchestrate Agents</a></h3>
           <p class="difficulty">🔴 Advanced</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#CI/CD</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#DevOps</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AgentLifecycle</span></div>
           <div class="card-actions">
             <a href="lab11-agent-cicd-lifecycle/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab11-agent-cicd-lifecycle/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab11-agent-cicd-lifecycle/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -245,9 +292,10 @@
           </div>
           <h3><a href="lab12-conversation-audit-vault/index.html">Building an Enterprise Audit Vault: Real-Time Conversation Logging and Compliance in watsonx Orchestrate</a></h3>
           <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#AuditVault</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Compliance</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#ConversationLogging</span></div>
           <div class="card-actions">
             <a href="lab12-conversation-audit-vault/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab12-conversation-audit-vault/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab12-conversation-audit-vault/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -258,9 +306,10 @@
           </div>
           <h3><a href="lab13-observability-dashboard/index.html">Live Observability & Telemetry for watsonx Orchestrate: Monitoring Agent Health, Latency, and Token Spend</a></h3>
           <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Observability</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Telemetry</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#TokenTracking</span></div>
           <div class="card-actions">
             <a href="lab13-observability-dashboard/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab13-observability-dashboard/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab13-observability-dashboard/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -271,9 +320,10 @@
           </div>
           <h3><a href="lab14-rag-evaluation-pipeline/index.html">Evaluating Enterprise RAG Pipelines in watsonx Orchestrate: Automated Quality Metrics with Ragas</a></h3>
           <p class="difficulty">🏆 Expert (Mastery)</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#RAGEvaluation</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Ragas</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Faithfulness</span></div>
           <div class="card-actions">
             <a href="lab14-rag-evaluation-pipeline/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab14-rag-evaluation-pipeline/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab14-rag-evaluation-pipeline/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         
@@ -284,9 +334,10 @@
           </div>
           <h3><a href="lab15-remote-mcp-code-engine/index.html">Deploying Remote Containerized MCP Servers on IBM Cloud Code Engine: Overcoming 422 Gateway Errors & SSE Handshakes</a></h3>
           <p class="difficulty">🔴 Advanced</p>
+          <div style="display:flex; flex-wrap:wrap; margin-bottom:1rem;"><span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#watsonxOrchestrate</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#RemoteMCP</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#IBMCloudCodeEngine</span> <span class="badge" style="font-size:0.7rem; margin-right:0.3rem; margin-bottom:0.3rem;">#Server-SentEvents</span></div>
           <div class="card-actions">
             <a href="lab15-remote-mcp-code-engine/index.html" class="btn btn-primary">Read Guide &rarr;</a>
-            <a href="lab15-remote-mcp-code-engine/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy Community HTML</a>
+            <a href="lab15-remote-mcp-code-engine/ibm_community_post.html" target="_blank" class="btn btn-ghost">📋 Copy HTML</a>
           </div>
         </div>
         

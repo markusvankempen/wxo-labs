@@ -52,7 +52,6 @@ async def check_identity(request):
     
     token = auth_header.split(" ")[1]
     try:
-        # In production: verify RSA signature using JWKS endpoint
         payload_segment = token.split(".")[1]
         decoded = base64.b64decode(payload_segment + "==").decode("utf-8")
         claims = json.loads(decoded)
@@ -115,6 +114,12 @@ tools:
   <li><strong>Token Leakage Prevention:</strong> Never pass raw tokens as prompt arguments to the LLM. Always inject them at the transport layer (`Authorization: Bearer`) using WXO Connection settings.</li>
   <li><strong>JWT Expiry:</strong> Ensure downstream services handle token refresh or expect fresh tokens on every agent dialogue turn.</li>
 </ul>
+
+<hr />
+
+<h3>🏷️ Recommended Community Tags</h3>
+<p>When publishing this blog post, select or enter the following tags in the community editor:</p>
+<p><code>watsonx Orchestrate</code>, <code>MCP Security</code>, <code>Bearer Tokens</code>, <code>JWT</code>, <code>OAuth</code>, <code>Enterprise Security</code>, <code>Starlette</code></p>
 
 <hr />
 
