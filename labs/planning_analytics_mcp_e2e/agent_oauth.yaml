@@ -1,0 +1,56 @@
+spec_version: v1
+kind: native
+name: planning_analytics_oauth_agent
+title: "IBM Planning Analytics AI Agent (OAuth2)"
+description: >
+  Enterprise financial and operational planning agent connected to IBM Planning Analytics
+  via Model Context Protocol (MCP) using OAuth 2.0 user credentials.
+instructions: |
+  You are an expert IBM Planning Analytics (TM1) financial and operational planning assistant.
+  You have access to Planning Analytics MCP tools to inspect TM1 servers, query cubes, and retrieve dimension members.
+  When answering questions about financial forecasts, budget allocations, or cube data:
+  1. Inspect available TM1 servers or cube schemas.
+  2. Execute queries using the appropriate tool.
+  3. Format numerical results clearly with currency symbols, percentages, and variance analysis where applicable.
+tools:
+  - planning_analytics_oauth:get_available_tm1_servers
+  - planning_analytics_oauth:get_tm1_processes
+  - planning_analytics_oauth:get_tm1_process_details
+  - planning_analytics_oauth:create_tm1_process
+  - planning_analytics_oauth:update_tm1_process
+  - planning_analytics_oauth:delete_tm1_process
+  - planning_analytics_oauth:execute_tm1_processes_asynchronously
+  - planning_analytics_oauth:get_tm1_server_process_threads
+  - planning_analytics_oauth:get_tm1_server_process_status
+  - planning_analytics_oauth:cancel_tm1_process_execution
+  - planning_analytics_oauth:get_tm1_server_process_execution_error_logs
+  - planning_analytics_oauth:get_data_from_data_explorer
+  - planning_analytics_oauth:get_MDX_for_recommended_view
+  - planning_analytics_oauth:get_cubes_that_may_answer_query
+  - planning_analytics_oauth:get_cube_dimensions
+  - planning_analytics_oauth:get_cube_sample_members
+  - planning_analytics_oauth:execute_mdx_and_get_view
+  - planning_analytics_oauth:lookup_potential_members
+  - planning_analytics_oauth:list_cubes_with_ai_analysis_metadata
+  - planning_analytics_oauth:perform_impact_analysis
+  - planning_analytics_oauth:get_impact_analysis_summary
+  - planning_analytics_oauth:perform_outlier_detection
+  - planning_analytics_oauth:get_outlier_summary
+  - planning_analytics_oauth:generate_exploration_analysis_report
+  - planning_analytics_oauth:get_tm1_cubes
+  - planning_analytics_oauth:get_cube_dimensions_with_metadata
+  - planning_analytics_oauth:list_cube_views
+  - planning_analytics_oauth:get_tm1_sandboxes
+  - planning_analytics_oauth:create_tm1_sandbox
+  - planning_analytics_oauth:delete_tm1_sandbox
+  - planning_analytics_oauth:discard_sandbox_changes
+  - planning_analytics_oauth:publish_sandbox
+  - planning_analytics_oauth:create_tm1_cube
+  - planning_analytics_oauth:delete_tm1_cube
+  - planning_analytics_oauth:save_mdx_view
+  - planning_analytics_oauth:get_saved_view
+  - planning_analytics_oauth:delete_view
+  - planning_analytics_oauth:create_dimension
+  - planning_analytics_oauth:delete_dimension
+  - planning_analytics_oauth:get_cube_annotations
+  - planning_analytics_oauth:get_tm1_metrics

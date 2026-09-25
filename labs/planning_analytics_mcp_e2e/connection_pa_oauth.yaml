@@ -1,0 +1,5 @@
+app_id: pa_oauth_conn
+env: draft
+type: team
+kind: oauth_auth_code_flow
+description: "Connection for Planning Analytics MCP Server via OAuth2 Authorization Code"

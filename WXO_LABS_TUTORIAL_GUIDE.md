@@ -27,6 +27,7 @@
   - [Lab 10: SSO Integration](#lab-10-sso-integration-with-microsoft-entra-id)
   - [Lab 11: Agent Export/Import](#lab-11-agent-exportimport--cicd)
   - [Lab 15: External Remote MCP Server Integration](#lab-15-external-remote-mcp-server-integration---streamable-http-sse--live-observability)
+  - [Lab 16: IBM Planning Analytics MCP Enterprise Integration](#lab-16-ibm-planning-analytics-tm1-mcp-enterprise-integration)
 - [🏆 Expert Labs (Mastery)](#-expert-labs-mastery)
   - [Lab 12: Conversation Logging](#lab-12-conversation-logging--audit-vault)
   - [Lab 13: Observability Dashboard](#lab-13-observability-dashboard)
@@ -1763,6 +1764,148 @@ cd labs/mcp_ticket_demo_e2e
 
 #### 🎯 Challenge Exercise
 Configure `mcp-ticket-demo` with `--auth-mode write` so that read operations (`search_tickets`, `get_ticket`) require no key, but filing a new ticket (`create_ticket`) requires an authenticated team connection.
+
+---
+
+### Lab 16: IBM Planning Analytics (TM1) MCP Enterprise Integration
+**⏱️ Duration:** 120 minutes  
+**📁 Reference:** [`labs/planning_analytics_mcp_e2e/`](./labs/planning_analytics_mcp_e2e/)  
+**🎯 Learning Goals:** IBM Planning Analytics (TM1) as a Service, Universal MCP Endpoint, API Key / Basic Auth (`realm="apikey"`), OAuth 2.0 Auth Code Flow with PA Workspace (`v0userContext`), multi-query AI agent scenarios, and diagnosing `CM-UNKNOWN-001` vs `Gateway 422`.
+
+#### Real-World Scenario
+Enterprise financial analysts and business planners rely on IBM Planning Analytics (TM1) for multi-dimensional cube budgeting, rolling forecasts, and variance modeling. Connecting watsonx Orchestrate agents to TM1 via the Model Context Protocol (MCP) enables conversational querying of TM1 servers, cubes, dimensions, and MDX views.
+
+This lab covers two end-to-end authentication patterns:
+1. **Flow 1: API Key / Basic Auth (`realm="apikey"`)** — Works seamlessly on both SaaS trials and enterprise tenants, exposing 36 TM1 tools.
+2. **Flow 2: OAuth 2.0 Authorization Code Flow** — Integrates with PA Workspace using the mandatory `v0userContext` scope.
+
+---
+
+#### 🏗️ Architecture & Universal Route
+
+```
+User Prompt: "What cubes are available on BusinessFlow?"
+       ↓
+watsonx Orchestrate AI Agent (Granite 3)
+       ↓
+WxO MCP Gateway (streamable_http)
+       ↓  (Basic Auth: "apikey" / $PA_API_KEY or Bearer OAuth2)
+IBM Planning Analytics MCP Universal Route
+https://<region>.planninganalytics.saas.ibm.com/api/<tenantId>/v0/agentic-ai/ibm-pa-tools/mcp
+       ↓
+TM1 Database Engine (Cubes: Sales, BalanceSheet, Dimensions, MDX Views)
+```
+
+---
+
+#### 🚀 Flow 1: Integration via API Key (Basic Auth)
+
+**1. Toolkit Manifest (`toolkit_pa_apikey.yaml`):**
+```yaml
+spec_version: v1
+kind: mcp
+name: planning_analytics_apikey
+description: "IBM Planning Analytics MCP Universal Endpoint (API Key / Basic Auth)"
+transport: streamable_http
+url: "https://us-east-1.planninganalytics.saas.ibm.com/api/Z7LGTIG97RKC/v0/agentic-ai/ibm-pa-tools/mcp"
+tools:
+  - "*"
+```
+
+**2. Register Connection & Store Credentials:**
+```bash
+# Register team basic connection
+orchestrate connections add -a pa_apikey_conn
+
+orchestrate connections configure \
+  -a pa_apikey_conn \
+  --env draft \
+  --type team \
+  --kind basic
+
+# Username MUST be "apikey", password is the API key
+orchestrate connections set-credentials \
+  -a pa_apikey_conn \
+  --env draft \
+  --username "apikey" \
+  --password "$PA_API_KEY"
+```
+
+**3. Import Toolkit & Verify 36 Tools:**
+```bash
+orchestrate toolkits import -f toolkit_pa_apikey.yaml -a pa_apikey_conn
+COLUMNS=250 orchestrate tools list | grep -i "pa_apikey_conn"
+```
+
+**4. Deploy AI Agent & Test Queries:**
+```bash
+orchestrate agents import -f agent.yaml
+orchestrate agents deploy -n planning_analytics_agent
+
+orchestrate chat ask -n planning_analytics_agent "What are the available TM1 servers?"
+```
+
+**Verified Response:**
+```text
+╭─ 🤖 planning_analytics_agent ────────────────────────────────────────────────╮
+│                                                                              │
+│  The TM1 environment currently has the following server available:           │
+│                                                                              │
+│  - **BusinessFlow**                                                          │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+---
+
+#### 🔐 Flow 2: OAuth 2.0 Authorization Code Flow
+
+> [!NOTE]
+> Flow 2 requires an Enterprise / Paid PA subscription (PA Workspace > Administration > Integrations tile). In trial accounts, use Flow 1 (API Key).
+
+**Configure Connection with Mandatory Scope:**
+```bash
+orchestrate connections add -a pa_oauth_conn
+
+orchestrate connections configure \
+  -a pa_oauth_conn \
+  --env draft \
+  --kind oauth_auth_code_flow \
+  --type team
+
+# Crucial: PAW strictly mandates the scope "v0userContext"
+orchestrate connections set-credentials \
+  -a pa_oauth_conn \
+  --env draft \
+  --client-id "$PA_OAUTH_CLIENT_ID" \
+  --client-secret "$PA_OAUTH_CLIENT_SECRET" \
+  --auth-url "https://us-east-1.planninganalytics.saas.ibm.com/oauth2/authorize" \
+  --token-url "https://us-east-1.planninganalytics.saas.ibm.com/oauth2/token" \
+  --scopes "v0userContext" \
+  --grant-type "authorization_code"
+
+orchestrate toolkits import -f toolkit_pa_oauth.yaml -a pa_oauth_conn
+```
+
+---
+
+#### 💡 Troubleshooting Common Gotchas
+
+1. **`CM-UNKNOWN-001: "Failed to obtain access token"` (Status 500)**
+   - **Fix:** Ensure `--scopes "v0userContext"` is provided. PAW OAuth token endpoint rejects requests without this exact scope.
+2. **`Gateway creation failed: 422`**
+   - **Fix:** Run `./probe_endpoints.sh` to confirm HTTP 401 response and network path. Ensure credentials were saved on `--env draft`.
+3. **Trial Accounts:**
+   - **Fix:** If the "Integrations" tile is hidden in the PA Workspace Admin menu, use Flow 1 (API Key/Basic Auth) which is 100% active on all PA SaaS tiers.
+
+---
+
+#### ✅ Success Criteria
+- [ ] Confirmed endpoint reachability via `./probe_endpoints.sh`.
+- [ ] Discovered 36 TM1 tools in watsonx Orchestrate.
+- [ ] Successfully queried TM1 server `BusinessFlow`.
+- [ ] Enumerated cubes, dimensions, and MDX views.
+- [ ] Passed automated assertions in `test_agent_scenarios.sh`.
 
 ---
 

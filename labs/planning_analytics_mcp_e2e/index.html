@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows | WXO Labs Series (Part 16)</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Connect IBM Planning Analytics (TM1) as a Service to watsonx Orchestrate AI agents using Model Context Protocol (MCP) with API Key and OAuth2 authentication.">
+  <meta name="keywords" content="watsonx Orchestrate, IBM Planning Analytics, TM1, Model Context Protocol, MCP, OAuth 2.0, API Key Auth, Enterprise AI">
+  <meta name="author" content="Markus van Kempen">
+  <link rel="canonical" href="https://markusvankempen.github.io/wxo-labs/blog/lab16-planning-analytics-mcp/">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://markusvankempen.github.io/wxo-labs/blog/lab16-planning-analytics-mcp/">
+  <meta property="og:title" content="IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows">
+  <meta property="og:description" content="Connect IBM Planning Analytics (TM1) as a Service to watsonx Orchestrate AI agents using Model Context Protocol (MCP) with API Key and OAuth2 authentication.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+  <meta property="og:site_name" content="WXO Labs: Hands-On Watsonx Orchestrate Guide">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://markusvankempen.github.io/wxo-labs/blog/lab16-planning-analytics-mcp/">
+  <meta name="twitter:title" content="IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows">
+  <meta name="twitter:description" content="Connect IBM Planning Analytics (TM1) as a Service to watsonx Orchestrate AI agents using Model Context Protocol (MCP) with API Key and OAuth2 authentication.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows",
+  "description": "Connect IBM Planning Analytics (TM1) as a Service to watsonx Orchestrate AI agents using Model Context Protocol (MCP) with API Key and OAuth2 authentication.",
+  "image": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "Markus van Kempen",
+    "url": "https://markusvankempen.github.io/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "IBM watsonx Orchestrate Labs",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg"
+    }
+  },
+  "url": "https://markusvankempen.github.io/wxo-labs/blog/lab16-planning-analytics-mcp/",
+  "keywords": "watsonx Orchestrate, IBM Planning Analytics, TM1, Model Context Protocol, MCP, OAuth 2.0, API Key Auth, Enterprise AI"
+}
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-code: #0d131f;
+      --border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --ibm-blue: #0f62fe;
+      --ibm-cyan: #00d3ff;
+      --accent-purple: #8a3ffc;
+      --gradient-brand: linear-gradient(135deg, #0f62fe 0%, #00d3ff 50%, #8a3ffc 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --shadow-glow: 0 0 35px rgba(15, 98, 254, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-brand); z-index: 1000; width: 0%; }
+    .navbar {
+      position: sticky; top: 0; background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;
+      font-weight: 600; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0353e9; transform: translateY(-1px); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--border); }
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; background: rgba(15, 98, 254, 0.15); color: var(--ibm-cyan); border: 1px solid rgba(15, 98, 254, 0.3); margin-bottom: 0.75rem; }
+    .tags-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem; }
+    .tag-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(255, 255, 255, 0.05); color: var(--ibm-cyan); border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
+    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .hero-banner { width: 100%; border-radius: var(--radius-md); margin: 2rem 0; box-shadow: var(--shadow-glow); border: 1px solid var(--border); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
+    pre { background: var(--bg-code); padding: 1.25rem; border-radius: var(--radius-sm); overflow-x: auto; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; margin: 1rem 0; }
+    code { font-family: 'JetBrains Mono', monospace; color: var(--ibm-cyan); }
+    hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <nav class="navbar">
+    <a href="../index.html" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" alt="WXO Labs">
+      <span>WXO Labs Series</span>
+    </a>
+    <div class="nav-actions">
+      <a href="../index.html" class="btn btn-ghost">&larr; All 15 Articles</a>
+      <a href="ibm_community_post.html" target="_blank" class="btn btn-primary">📋 Copy Community HTML</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <span class="badge">Part 16 of 15 &bull; 🔴 Advanced &bull; ⏱️ 120 minutes</span>
+    <h1>IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows</h1>
+    <p style="color: var(--text-secondary); font-size: 1.1rem;">Connecting watsonx Orchestrate AI agents to Planning Analytics SaaS over Model Context Protocol with dual authentication patterns.</p>
+    
+    <div class="tags-container">
+      <span class="tag-badge">#watsonxOrchestrate</span><span class="tag-badge">#IBMPlanningAnalytics</span><span class="tag-badge">#TM1</span><span class="tag-badge">#ModelContextProtocol</span><span class="tag-badge">#MCP</span><span class="tag-badge">#OAuth2.0</span><span class="tag-badge">#APIKeyAuth</span><span class="tag-badge">#EnterpriseAI</span>
+    </div>
+
+    <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="IBM Planning Analytics (TM1) Enterprise MCP Integration: API Key & OAuth 2.0 Authentication Flows" class="hero-banner">
+
+    <div class="card">
+      <h3 style="margin-bottom:0.75rem; color:var(--ibm-cyan);">Why This Pattern Matters</h3>
+      <p>Enterprise financial analysts and business planners rely on IBM Planning Analytics (TM1) for multi-dimensional cube budgeting, rolling forecasts, and variance modeling. Connecting watsonx Orchestrate agents to TM1 via the Model Context Protocol (MCP) enables conversational querying of TM1 servers, cubes, dimensions, and MDX views. This lab covers two end-to-end authentication patterns: Flow 1 (API Key/Basic Auth with realm='apikey') which works seamlessly on both SaaS trials and enterprise tenants, and Flow 2 (OAuth 2.0 Authorization Code Flow via PA Workspace with the mandatory v0userContext scope).</p>
+    </div>
+
+    <hr>
+
+    <h2>Step 1: Write Tool Logic (<code>toolkit_pa_apikey.yaml</code>)</h2>
+    <pre><code>spec_version: v1
+kind: mcp
+name: planning_analytics_apikey
+description: "IBM Planning Analytics MCP Universal Endpoint (API Key / Basic Auth)"
+transport: streamable_http
+url: "https://us-east-1.planninganalytics.saas.ibm.com/api/Z7LGTIG97RKC/v0/agentic-ai/ibm-pa-tools/mcp"
+tools:
+  - "*"</code></pre>
+
+    <h2>Step 2: Dependencies (<code>requirements.txt</code>)</h2>
+    <pre><code>ibm-watsonx-orchestrate>=2.9.0</code></pre>
+
+    <h2>Step 3: Agent Manifest (<code>agent.yaml</code>)</h2>
+    <pre><code>spec_version: v1
+kind: native
+name: planning_analytics_agent
+title: "IBM Planning Analytics AI Agent"
+description: "Enterprise financial and operational planning agent connected to IBM Planning Analytics via MCP."
+model: ibm/granite-3-8b-instruct
+instructions: |
+  You are an expert IBM Planning Analytics (TM1) financial and operational planning assistant.
+  Inspect available TM1 servers or cube schemas, and execute queries using the appropriate tool.
+tools:
+  - planning_analytics_apikey:get_available_tm1_servers
+  - planning_analytics_apikey:get_tm1_cubes
+  - planning_analytics_apikey:get_cube_dimensions
+  - planning_analytics_apikey:list_cube_views
+  - planning_analytics_apikey:get_cube_sample_members
+  - planning_analytics_apikey:execute_mdx_and_get_view</code></pre>
+
+    <h2>Step 4: Live Execution</h2>
+    <pre><code>orchestrate chat ask -n planning_analytics_agent "What are the available TM1 servers?"</code></pre>
+    <pre><code>╭─ 🤖 planning_analytics_agent ────────────────────────────────────────────────╮
+│                                                                              │
+│  The TM1 environment currently has the following server available:           │
+│                                                                              │
+│  - **BusinessFlow**                                                          │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯</code></pre>
+
+    <hr>
+
+    <h2>💡 Pro Tips &amp; Architecture Insights</h2>
+    <div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 CM-UNKNOWN-001: Failed to obtain access token</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">PA Workspace OAuth strictly mandates the scope `v0userContext`. Without this scope, the OAuth token endpoint rejects the exchange.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 Trial vs Enterprise Subscriptions</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">In trial accounts, the Administration > Integrations menu is restricted. Always use Flow 1 (API Key / Basic Auth with realm='apikey') which is 100% supported on all tiers.</p>
+</div><div class="card" style="margin-bottom:1rem; border-left:3px solid var(--ibm-blue);">
+  <strong>💡 Universal Route Handshake</strong>
+  <p style="margin-top:0.4rem; color:var(--text-secondary);">Ensure the remote endpoint URL matches your account and tenant ID: `https://<region>.planninganalytics.saas.ibm.com/api/<tenantId>/v0/agentic-ai/ibm-pa-tools/mcp`.</p>
+</div>
+
+    <hr>
+    <div style="text-align:center; padding:2rem 0;">
+      <a href="ibm_community_post.html" class="btn btn-primary" style="padding:0.75rem 1.75rem; font-size:1rem;">📋 Open IBM Community Ready HTML</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+  </script>
+</body>
+</html>

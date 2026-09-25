@@ -1,0 +1,5 @@
+app_id: pa_apikey_conn
+env: draft
+type: team
+kind: basic
+description: "Connection for Planning Analytics MCP Server via API Key / Basic Auth"
