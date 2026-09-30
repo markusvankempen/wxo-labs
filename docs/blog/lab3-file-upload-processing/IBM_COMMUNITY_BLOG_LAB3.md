@@ -1,6 +1,6 @@
 # Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent
 
-![WXO Labs Banner](https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg)
+![WXO Labs Banner](https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/lab3-file-upload-processing/wxo_blog_banner.jpg)
 
 <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_labs_icon.jpg" width="48" height="48" style="border-radius:10px; vertical-align:middle; margin-right:8px;" /> **By Markus van Kempen** | *Series: WXO Labs & Tutorial Guide (Part 3 of 15)*  
 - **Community Group:** [watsonx Orchestrate - IBM Community](https://community.ibm.com/community/user/groups/community-home/recent-community-blogs?communitykey=3ad46381-9535-462e-85c9-568b21f4b067)  
@@ -56,15 +56,16 @@ def analyze_employee_data(file_path: str) -> str:
         dept_counts = df['Department'].value_counts().to_dict() if 'Department' in df.columns else {}
         avg_salary = f"${df['Salary'].mean():,.2f}" if 'Salary' in df.columns else "N/A"
 
+        breakdown = "\n".join([f"  • {dept}: {count}" for dept, count in dept_counts.items()])
         return f"""
-📊 Spreadsheet Analytics Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Spreadsheet Analytics Summary:
+---------------------------------
 Total Headcount:    {total_records}
 Detected Columns:   {columns}
 Average Base Pay:   {avg_salary}
 
 Department Breakdown:
-{chr(10).join([f"  • {dept}: {count}" for dept, count in dept_counts.items()])}
+{breakdown}
 """
     except Exception as e:
         return f"❌ Error processing Excel file: {str(e)}"
@@ -109,19 +110,17 @@ orchestrate chat ask -n hr_data_analyst "Analyze this spreadsheet: /tmp/sample_e
 **Live Response:**
 
 ```text
-╭─ 🤖 hr_data_analyst ───────────────────────────────────────────────────╮
-│                                                                        │
-│  📊 Spreadsheet Analytics Summary                                      │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                     │
-│  Total Headcount:    3                                                 │
-│  Detected Columns:   Employee_ID, Name, Department, Salary             │
-│  Average Base Pay:   $78,333.33                                        │
-│                                                                        │
-│  Department Breakdown:                                                 │
-│    • Engineering: 1                                                    │
-│    • Sales: 1                                                          │
-│    • HR: 1                                                             │
-╰────────────────────────────────────────────────────────────────────────╯
+[hr_data_analyst]
+Spreadsheet Analytics Summary:
+---------------------------------
+Total Headcount:    3
+Detected Columns:   Employee_ID, Name, Department, Salary
+Average Base Pay:   $78,333.33
+
+Department Breakdown:
+  • Engineering: 1
+  • Sales: 1
+  • HR: 1
 ```
 
 ---

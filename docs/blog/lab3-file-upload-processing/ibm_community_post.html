@@ -1,33 +1,3 @@
-<!-- 
-======================================================================
-  📋 IBM COMMUNITY PUBLISHING METADATA CHEAT SHEET
-  Copy and paste these exact values into the IBM Community form fields:
-======================================================================
-  • Meta Title:
-    Processing User Files & Spreadsheets in watsonx Orchestrat | WXO Labs
-
-  • Meta Description:
-    Build an automated data analyst AI agent in watsonx Orchestrate that processes user-uploaded Excel spreadsheets and CSVs using Pandas.
-
-  • Featured Image:
-    https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg
-
-  • Canonical Url:
-    https://markusvankempen.github.io/wxo-labs/blog/lab3-file-upload-processing/
-
-  • Associate this post with a group:
-    IBM Community Hub > Global IT Automation > watsonx Orchestrate
-
-  • Additional Meta:
-    <meta name="keywords" content="watsonx Orchestrate, File Upload, Pandas, Excel, Data Analytics, AI Agents, Python" />
-    <meta name="author" content="Markus van Kempen" />
-    <meta name="robots" content="index, follow" />
-
-  • Tags:
-    watsonx Orchestrate, File Upload, Pandas, Excel, Data Analytics, AI Agents, Python
-======================================================================
--->
-
 <h2>Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent</h2>
 
 <p>
@@ -39,7 +9,7 @@
 </p>
 
 <p>
-  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/getting-started-watsonx-orchestrate/wxo_blog_banner.jpg" alt="Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent" style="max-width: 100%; height: auto; border-radius: 8px;" />
+  <img src="https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/lab3-file-upload-processing/wxo_blog_banner.jpg" alt="Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent" style="max-width: 100%; height: auto; border-radius: 8px;" />
 </p>
 
 <h3>Why This Pattern Matters</h3>
@@ -52,16 +22,16 @@
 
 <p>Ensure your environment has the required dependencies:</p>
 
-<pre><code class="language-bash">pip install ibm-watsonx-orchestrate</code></pre>
+<pre><code>pip install ibm-watsonx-orchestrate</code></pre>
 
 <p>Verify active environment:</p>
-<pre><code class="language-bash">orchestrate env list</code></pre>
+<pre><code>orchestrate env list</code></pre>
 
 <hr />
 
-<h3>🛠️ Step 1: Implement the Logic (<code>file_processor.py</code>)</h3>
+<h3>🛠️ Step 1: Implement the Logic (file_processor.py)</h3>
 
-<pre><code class="language-python">from ibm_watsonx_orchestrate import tool
+<pre><code>from ibm_watsonx_orchestrate import tool
 import pandas as pd
 import os
 
@@ -87,32 +57,33 @@ def analyze_employee_data(file_path: str) -&gt; str:
         dept_counts = df['Department'].value_counts().to_dict() if 'Department' in df.columns else {}
         avg_salary = f"${df['Salary'].mean():,.2f}" if 'Salary' in df.columns else "N/A"
 
+        breakdown = "\n".join([f"  • {dept}: {count}" for dept, count in dept_counts.items()])
         return f"""
-📊 Spreadsheet Analytics Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Spreadsheet Analytics Summary:
+---------------------------------
 Total Headcount:    {total_records}
 Detected Columns:   {columns}
 Average Base Pay:   {avg_salary}
 
 Department Breakdown:
-{chr(10).join([f"  • {dept}: {count}" for dept, count in dept_counts.items()])}
+{breakdown}
 """
     except Exception as e:
         return f"❌ Error processing Excel file: {str(e)}"</code></pre>
 
 <hr />
 
-<h3>📦 Step 2: Declare Dependencies (<code>requirements.txt</code>)</h3>
+<h3>📦 Step 2: Declare Dependencies (requirements.txt)</h3>
 
-<pre><code class="language-text">ibm-watsonx-orchestrate>=2.9.0
-pandas>=2.0.0
-openpyxl>=3.1.0</code></pre>
+<pre><code>ibm-watsonx-orchestrate&gt;=2.9.0
+pandas&gt;=2.0.0
+openpyxl&gt;=3.1.0</code></pre>
 
 <hr />
 
-<h3>🤖 Step 3: Configure the AI Agent (<code>agent.yaml</code>)</h3>
+<h3>🤖 Step 3: Configure the AI Agent (agent.yaml)</h3>
 
-<pre><code class="language-yaml">spec_version: v1
+<pre><code>spec_version: v1
 kind: native
 name: hr_data_analyst
 title: "HR Data Analyst"
@@ -130,36 +101,28 @@ tools:
 
 <p>Import tool and test conversationally:</p>
 
-<pre><code class="language-bash">orchestrate chat ask -n hr_data_analyst "Analyze this spreadsheet: /tmp/sample_employees.xlsx"</code></pre>
+<pre><code>orchestrate chat ask -n hr_data_analyst "Analyze this spreadsheet: /tmp/sample_employees.xlsx"</code></pre>
 
 <p><strong>Live Response:</strong></p>
-<pre><code class="language-text">╭─ 🤖 hr_data_analyst ───────────────────────────────────────────────────╮
-│                                                                        │
-│  📊 Spreadsheet Analytics Summary                                      │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                     │
-│  Total Headcount:    3                                                 │
-│  Detected Columns:   Employee_ID, Name, Department, Salary             │
-│  Average Base Pay:   $78,333.33                                        │
-│                                                                        │
-│  Department Breakdown:                                                 │
-│    • Engineering: 1                                                    │
-│    • Sales: 1                                                          │
-│    • HR: 1                                                             │
-╰────────────────────────────────────────────────────────────────────────╯</code></pre>
+<pre><code>[hr_data_analyst]
+Spreadsheet Analytics Summary:
+---------------------------------
+Total Headcount:    3
+Detected Columns:   Employee_ID, Name, Department, Salary
+Average Base Pay:   $78,333.33
+
+Department Breakdown:
+  • Engineering: 1
+  • Sales: 1
+  • HR: 1</code></pre>
 
 <hr />
 
 <h3>💡 Pro Tips &amp; Gotchas</h3>
 <ul>
   <li><strong>File Path Hand-off:</strong> In watsonx Orchestrate WebChat, uploaded files are staged in the execution container. Always pass the exact file_path string supplied by the runtime.</li>
-  <li><strong>Excel Engine:</strong> Ensure `openpyxl` is specified in `requirements.txt` whenever reading `.xlsx` files with pandas.</li>
+  <li><strong>Excel Engine:</strong> Ensure openpyxl is specified in requirements.txt whenever reading .xlsx files with pandas.</li>
 </ul>
-
-<hr />
-
-<h3>🏷️ Recommended Community Tags</h3>
-<p>When publishing this blog post, select or enter the following tags in the community editor:</p>
-<p><code>watsonx Orchestrate</code>, <code>File Upload</code>, <code>Pandas</code>, <code>Excel</code>, <code>Data Analytics</code>, <code>AI Agents</code>, <code>Python</code></p>
 
 <hr />
 

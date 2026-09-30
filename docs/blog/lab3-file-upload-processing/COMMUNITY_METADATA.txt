@@ -1,0 +1,20 @@
+IBM Community Post Metadata: Lab 3
+=============================================================
+Title:
+Processing User Files & Spreadsheets in watsonx Orchestrate: Building an Automated Data Analyst Agent
+
+Associated Group:
+IBM Community Hub > Global IT Automation > watsonx Orchestrate
+
+Meta Description:
+Build an automated data analyst AI agent in watsonx Orchestrate that processes user-uploaded Excel spreadsheets and CSVs using Pandas.
+
+Featured Image URL:
+https://raw.githubusercontent.com/markusvankempen/wxo-labs/main/docs/blog/lab3-file-upload-processing/wxo_blog_banner.jpg
+
+Canonical URL:
+https://markusvankempen.github.io/wxo-labs/blog/lab3-file-upload-processing/
+
+Tags:
+watsonx Orchestrate, File Upload, Pandas, Excel, Data Analytics, AI Agents, Python
+=============================================================
