@@ -105,9 +105,9 @@ https://api.{region}.watson-orchestrate.ibm.com/instances/{instance-id}
 
 | Field | Value | Example |
 |-------|-------|---------|
-| **Identifier (Entity ID)** | `{BASE_URL}/saml/metadata` | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/metadata` |
-| **Reply URL (ACS URL)** | `{BASE_URL}/saml/acs` | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/acs` |
-| **Sign on URL** (Optional) | `{BASE_URL}/` | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/` |
+| **Identifier (Entity ID)** | `{BASE_URL}/saml/metadata` | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/metadata` |
+| **Reply URL (ACS URL)** | `{BASE_URL}/saml/acs` | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/acs` |
+| **Sign on URL** (Optional) | `{BASE_URL}/` | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/` |
 
 **Important Notes:**
 - ✅ Use the exact URLs from the discovery script

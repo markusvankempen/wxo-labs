@@ -92,7 +92,7 @@ Based on your current environment configuration:
 
 | Field | Value |
 | :--- | :--- |
-| **Identifier (Entity ID)** | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/metadata` |
-| **Reply URL (ACS URL)** | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/acs` |
+| **Identifier (Entity ID)** | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/metadata` |
+| **Reply URL (ACS URL)** | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/acs` |
 
 ---

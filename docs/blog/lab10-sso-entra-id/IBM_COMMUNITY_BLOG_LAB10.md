@@ -45,7 +45,7 @@ def verify_sso_identity(agent_run: AgentRun) -> str:
     context = agent_run.context if hasattr(agent_run, 'context') else {}
     
     email = context.get('wxo_email_id', 'Not provided')
-    tenant = context.get('tenant_id', 'ibm-ent-us-south')
+    tenant = context.get('tenant_id', '<your-tenant-id>')
     upn = context.get('user_principal_name', email)
     groups = context.get('groups', ['Cloud-Admins', 'WXO-Users'])
 
@@ -100,7 +100,7 @@ orchestrate chat ask -n sso_directory_agent "Verify my corporate login status"
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                             │
 │  Principal:  mvk@ca.ibm.com                                            │
 │  Email:      mvk@ca.ibm.com                                            │
-│  Tenant ID:  ibm-ent-us-south                                          │
+│  Tenant ID:  <your-tenant-id>                                          │
 │  Groups:     Cloud-Admins, WXO-Users                                   │
 │  Auth Type:  SAML 2.0 Federated Assertion                              │
 ╰────────────────────────────────────────────────────────────────────────╯

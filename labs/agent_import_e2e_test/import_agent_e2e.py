@@ -24,9 +24,9 @@ from ibm_watsonx_orchestrate.agent_builder.toolkits.types import ToolkitKind
 def run_e2e_import():
     print("🚀 Starting Agent Import E2E Test (ToolkitController)...")
     
-    # Credentials from .env
-    base_url = "https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b"
-    api_key = "azE6dXNyXzQ5Y2M4MWExLWEyYjAtM2MxYy04N2ViLWJmMjQ1YzdkNzE4NDpKUEZyWlppQWl5VEp4NzV0V3FjSmxUd29LaG1COUY0ejgwa21NbHRrc3lzPTp4R2dE"
+    # Credentials from environment / .env
+    base_url = os.getenv("WXO_BASE_URL", "https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>")
+    api_key = os.getenv("WXO_API_KEY", "your_api_key_here")
     
     try:
         # Initialize controller

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 token_url = "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token"
-api_key = "azE6dXNyX2FjMTExYmE2LTI2NjktMzE0ZS05ZTA0LTZlYjE2OGM4NjEyYjplZ0F0am9BaXZPVFhFa0UwYXJPem1VT0JPd1hIRDlLcVd2RkxmVUZlbmhjPTpleGxu"
+api_key = os.getenv("WXO_API_KEY", "your_api_key_here")
 
 def get_token():
     print(f"🔑 Exchanging API Key for token at {token_url}...")

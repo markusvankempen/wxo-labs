@@ -98,9 +98,9 @@ Based on your current environment:
 
 | Parameter | Value |
 |-----------|-------|
-| **Instance URL** | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b` |
-| **Entity ID** | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/metadata` |
-| **ACS URL** | `https://api.dl.watson-orchestrate.ibm.com/instances/20260409-1024-1886-70e4-25304afe4a1b/saml/acs` |
+| **Instance URL** | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>` |
+| **Entity ID** | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/metadata` |
+| **ACS URL** | `https://api.dl.watson-orchestrate.ibm.com/instances/<your-instance-id>/saml/acs` |
 
 Use these values when configuring Microsoft Entra ID.
 
