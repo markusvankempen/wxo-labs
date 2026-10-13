@@ -529,6 +529,6 @@ Tunnel hostname and timestamps will differ on your machine; the invariant is **`
 
 ---
 
-**Author:** Markus van Kempen | mvk@ca.ibm.com  
+**Author:** Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)  
 *No bug too small, no syntax too weird.*

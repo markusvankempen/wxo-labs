@@ -1,7 +1,7 @@
 # 🎓 WXO Labs & Tutorial Guide
 ## From Zero to Hero: Hands-On Learning Path
 
-**Author:** Markus van Kempen | mvk@ca.ibm.com  
+**Author:** Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://markusvankempen.github.io/)  
 *No bug too small, no syntax too weird.*
 

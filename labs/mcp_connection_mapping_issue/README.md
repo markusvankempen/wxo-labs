@@ -1,6 +1,6 @@
 # MCP Tool — `connections.key_value()` Not Working
 
-**Author:** Markus van Kempen | mvk@ca.ibm.com  
+**Author:** Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)  
 *No bug too small, no syntax too weird.*
 
@@ -181,5 +181,5 @@ Deploy this and call it from the WxO chat. If your keys (e.g., `BASE_URL`) don't
 - [ ] Keep `--app-id "render_images"` in the toolkit `add` command — this is what tells WxO to inject the creds
 - [ ] Add `load_dotenv()` with a `.env` file for local testing
 
-*Author: Markus van Kempen | mvk@ca.ibm.com*
+*Author: Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)*
 *No bug too small, no syntax too weird.*

@@ -1,6 +1,6 @@
 # Watsonx Orchestrate RBAC Pre-Invoke Plugin
 
-Author: Markus van Kempen | mvk@ca.ibm.com  
+Author: Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)  
 No bug too small, no syntax too weird.
 This directory contains a complete example of an **Agent Pre-Invoke Plugin** that implements Role-Based Access Control (RBAC) in Watsonx Orchestrate.

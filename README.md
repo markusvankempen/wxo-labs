@@ -1,6 +1,6 @@
 # WXO Labs — Watsonx Orchestrate Tutorial Guide
 
-**Author:** Markus van Kempen · [markusvankempen.github.io](https://markusvankempen.github.io/)
+**Author:** Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com) · [markusvankempen.github.io](https://markusvankempen.github.io/)
 
 Hands-on learning path for **IBM watsonx Orchestrate** — 15 progressive labs from your first Python tool to MCP integration, SSO, RBAC, observability, and RAG evaluation.
 

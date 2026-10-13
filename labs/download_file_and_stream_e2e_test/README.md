@@ -124,6 +124,6 @@ Use **`E2E_SHOW_HTML=0 ./run_e2e_test.sh`** to skip the excerpt.
 
 ## Author
 
-**Author:** Markus van Kempen | mvk@ca.ibm.com  
+**Author:** Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)  
 *No bug too small, no syntax too weird.*

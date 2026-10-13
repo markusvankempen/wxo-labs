@@ -102,6 +102,6 @@ The agent will successfully extract your email address from the context runtime 
 - **[context_update_test](../context_update_test/README.md)** – Update and read custom context keys (`user_favorite_color`, `user_current_status`) via `request_context`.
 - **[context_ids_test](../context_ids_test/README.md)** – Debug tool that dumps the **full** `AgentRun` to see what WxO injects at runtime (e.g. thread_id, trace_id, session_id). Use when you need a unique conversation identifier for backend tracking; the README there summarizes the platform question and how to run the test.
 
-Author: Markus van Kempen | mvk@ca.ibm.com  
+Author: Markus van Kempen | [mvk@ca.ibm.com](mailto:mvk@ca.ibm.com) | [markus.van.kempen@gmail.com](mailto:markus.van.kempen@gmail.com)  
 [Research | Floor 7½ 🏢🤏](https://pages.github.ibm.com/mvankempen/homepage/)  
 No bug too small, no syntax too weird.
