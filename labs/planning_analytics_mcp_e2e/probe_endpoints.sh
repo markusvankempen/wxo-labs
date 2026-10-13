@@ -3,9 +3,13 @@
 # Planning Analytics MCP & OAuth Endpoint Probe
 # ==============================================================================
 
-PA_HOST="us-east-1.planninganalytics.saas.ibm.com"
-ACCOUNT_ID="35L2PSTGTSA4"
-TENANT_ID="Z7LGTIG97RKC"
+if [ -f .env ]; then
+  source .env
+fi
+
+PA_HOST="${PA_HOST:-us-east-1.planninganalytics.saas.ibm.com}"
+ACCOUNT_ID="${PA_ACCOUNT_ID:-<your_account_id>}"
+TENANT_ID="${PA_TENANT_ID:-<your_tenant_id>}"
 
 MCP_URL="https://${PA_HOST}/api/${TENANT_ID}/v0/agentic-ai/ibm-pa-tools/mcp"
 AUTH_URL="https://${PA_HOST}/oauth2/authorize"

@@ -35,7 +35,7 @@ kind: mcp
 name: planning_analytics_apikey
 description: "IBM Planning Analytics MCP Universal Endpoint (API Key / Basic Auth)"
 transport: streamable_http
-url: "https://us-east-1.planninganalytics.saas.ibm.com/api/Z7LGTIG97RKC/v0/agentic-ai/ibm-pa-tools/mcp"
+url: "https://<region>.planninganalytics.saas.ibm.com/api/<tenant_id>/v0/agentic-ai/ibm-pa-tools/mcp"
 tools:
   - "*"
 ```

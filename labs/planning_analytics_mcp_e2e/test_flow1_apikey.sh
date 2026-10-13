@@ -13,9 +13,9 @@ if [ -f .env ]; then
 fi
 
 PA_HOST="${PA_HOST:-us-east-1.planninganalytics.saas.ibm.com}"
-TENANT_ID="${TENANT_ID:-Z7LGTIG97RKC}"
-ACCOUNT_ID="${ACCOUNT_ID:-35L2PSTGTSA4}"
-MCP_URL="https://${PA_HOST}/api/${TENANT_ID}/v0/agentic-ai/ibm-pa-tools/mcp"
+TENANT_ID="${PA_TENANT_ID:-${TENANT_ID:-<your_tenant_id>}}"
+ACCOUNT_ID="${PA_ACCOUNT_ID:-${ACCOUNT_ID:-<your_account_id>}}"
+MCP_URL="${PA_MCP_URL:-https://${PA_HOST}/api/${TENANT_ID}/v0/agentic-ai/ibm-pa-tools/mcp}"
 
 echo "=================================================================="
 echo "🚀 Testing Flow 1: Planning Analytics MCP via API Key"

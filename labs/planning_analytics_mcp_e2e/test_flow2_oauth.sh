@@ -13,13 +13,13 @@ if [ -f .env ]; then
 fi
 
 PA_HOST="${PA_HOST:-us-east-1.planninganalytics.saas.ibm.com}"
-TENANT_ID="${TENANT_ID:-Z7LGTIG97RKC}"
-ACCOUNT_ID="${ACCOUNT_ID:-35L2PSTGTSA4}"
+TENANT_ID="${PA_TENANT_ID:-${TENANT_ID:-<your_tenant_id>}}"
+ACCOUNT_ID="${PA_ACCOUNT_ID:-${ACCOUNT_ID:-<your_account_id>}}"
 
-MCP_URL="https://${PA_HOST}/api/${TENANT_ID}/v0/agentic-ai/ibm-pa-tools/mcp"
-AUTH_URL="https://${PA_HOST}/oauth2/authorize"
-TOKEN_URL="https://${PA_HOST}/oauth2/token"
-PA_OAUTH_SCOPE="v0userContext"
+MCP_URL="${PA_MCP_URL:-https://${PA_HOST}/api/${TENANT_ID}/v0/agentic-ai/ibm-pa-tools/mcp}"
+AUTH_URL="${PA_OAUTH_AUTH_URL:-https://${PA_HOST}/oauth2/authorize}"
+TOKEN_URL="${PA_OAUTH_TOKEN_URL:-https://${PA_HOST}/oauth2/token}"
+PA_OAUTH_SCOPE="${PA_OAUTH_SCOPE:-v0userContext}"
 
 echo "=================================================================="
 echo "🚀 Testing Flow 2: Planning Analytics MCP via OAuth 2.0 Auth Code"

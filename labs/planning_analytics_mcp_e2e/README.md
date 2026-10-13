@@ -17,13 +17,13 @@ This directory provides automated scripts, manifests, and diagnostic tooling for
 
 | Parameter | Value |
 |---|---|
-| **PA Workspace Admin Console** | `https://us-east-1.planninganalytics.saas.ibm.com/?accountId=35L2PSTGTSA4&tenantId=Z7LGTIG97RKC&perspective=pa-administration` |
-| **Host Region** | `us-east-1.planninganalytics.saas.ibm.com` |
-| **Account ID** | `35L2PSTGTSA4` |
-| **Tenant ID** | `Z7LGTIG97RKC` |
-| **MCP Universal Route** | `https://us-east-1.planninganalytics.saas.ibm.com/api/Z7LGTIG97RKC/v0/agentic-ai/ibm-pa-tools/mcp` |
-| **OAuth2 Authorize URL** | `https://us-east-1.planninganalytics.saas.ibm.com/oauth2/authorize` |
-| **OAuth2 Token URL** | `https://us-east-1.planninganalytics.saas.ibm.com/oauth2/token` |
+| **PA Workspace Admin Console** | `https://<region>.planninganalytics.saas.ibm.com/?accountId=<your_account_id>&tenantId=<your_tenant_id>&perspective=pa-administration` |
+| **Host Region** | `<region>.planninganalytics.saas.ibm.com` |
+| **Account ID** | `<your_account_id>` |
+| **Tenant ID** | `<your_tenant_id>` |
+| **MCP Universal Route** | `https://<region>.planninganalytics.saas.ibm.com/api/<your_tenant_id>/v0/agentic-ai/ibm-pa-tools/mcp` |
+| **OAuth2 Authorize URL** | `https://<region>.planninganalytics.saas.ibm.com/oauth2/authorize` |
+| **OAuth2 Token URL** | `https://<region>.planninganalytics.saas.ibm.com/oauth2/token` |
 | **Mandatory OAuth Scope** | `v0userContext` |
 
 ---
@@ -33,7 +33,7 @@ This directory provides automated scripts, manifests, and diagnostic tooling for
 Running `./probe_endpoints.sh` against the target instance verified that the endpoints are active and confirmed the expected authentication challenges:
 
 ```http
-POST /api/Z7LGTIG97RKC/v0/agentic-ai/ibm-pa-tools/mcp
+POST /api/<your_tenant_id>/v0/agentic-ai/ibm-pa-tools/mcp
 HTTP/2 401 
 server: cloudflare
 www-authenticate: Basic realm="apikey"
@@ -152,7 +152,7 @@ Flow 2 delegates user credentials via the Planning Analytics Workspace OAuth cli
 ### Step 1: Configure Authorized Application in PAW (Enterprise Only)
 
 1. Open your PA Admin Console:  
-   `https://us-east-1.planninganalytics.saas.ibm.com/?accountId=35L2PSTGTSA4&tenantId=Z7LGTIG97RKC&perspective=pa-administration`
+   `https://<region>.planninganalytics.saas.ibm.com/?accountId=<your_account_id>&tenantId=<your_tenant_id>&perspective=pa-administration`
 2. Click the **Integrations** tile.
 3. Locate **OAuth** and click **Add** (or edit existing).
 4. Enter a **Client name** (e.g. `WxO-Assistant`).
